@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>星树书房 · 选诗</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;600&amp;display=swap">
+<style>
+body{margin:0;background:#f3eee2}
+a{color:#23211d}a:hover{color:#a8352b}
+button{font-family:inherit;color:inherit;cursor:pointer}
+@keyframes inkDrift{0%{transform:translate(0,0) scale(1)}50%{transform:translate(4%,-3%) scale(1.07)}100%{transform:translate(-3%,2%) scale(.95)}}
+@keyframes inkMorph{0%{border-radius:42% 58% 63% 37%/41% 44% 56% 59%}50%{border-radius:58% 42% 38% 62%/55% 61% 39% 45%}100%{border-radius:47% 53% 55% 45%/62% 38% 62% 38%}}
+@media (prefers-reduced-motion: reduce){*{animation:none !important}}
+</style>
+</helmet>
+
+<div style="position: relative; font-family: 'Noto Serif SC', 'Songti SC', serif; background: #f3eee2; color: #23211d; overflow: hidden; padding: 0 6vw">
+
+  <div aria-hidden="true" style="position: absolute; width: 620px; height: 620px; right: -200px; top: -260px; pointer-events: none">
+    <div style="width: 100%; height: 100%; border-radius: 50%; background: radial-gradient(closest-side, rgba(35,33,29,.20), rgba(35,33,29,.07) 55%, rgba(35,33,29,0)); filter: blur(22px); animation: inkMorph 18s ease-in-out infinite alternate, inkDrift 30s ease-in-out infinite alternate; animation-play-state: {{play}}"></div>
+  </div>
+
+  <header style="position: relative; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; padding-top: 32px">
+    <a href="Main.dc.html" aria-label="星树书房 首页" style="display: flex; text-decoration: none">
+      <span aria-hidden="true" style="width: 44px; height: 56px; box-sizing: border-box; background: {{accent}}; color: #f3eee2; writing-mode: vertical-rl; font-size: 18px; font-weight: 600; letter-spacing: .12em; display: flex; align-items: center; justify-content: center; border-radius: 3px">星樹</span>
+    </a>
+    <nav aria-label="主导航" style="display: flex; gap: 36px; font-size: 15px; letter-spacing: .3em">
+      <a href="Poems.dc.html" aria-current="page" style="text-decoration: none; padding: 12px 0; color: {{accent}}; border-bottom: 1px solid {{accent}}">诗词</a>
+      <a href="Main.dc.html#works" style="text-decoration: none; padding: 12px 0">作品</a>
+      <a href="Main.dc.html#about" style="text-decoration: none; padding: 12px 0">关于</a>
+    </nav>
+  </header>
+
+  <main style="position: relative; max-width: 1180px; margin: 0 auto; padding: 56px 0 112px; display: flex; flex-direction: column; gap: 48px">
+
+    <div style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 28px">
+      <h1 style="margin: 0; font-size: 34px; font-weight: 400; letter-spacing: .3em">择一首诗</h1>
+      <p style="margin: 0; font-size: 14px; letter-spacing: .15em; color: #625c52">唐诗 · 宋词 · 诗经楚辞 · 古文 · 经文，共 963 首</p>
+    </div>
+
+    <div style="display: flex; flex-wrap: wrap; align-items: flex-start; gap: 56px 48px">
+
+      <section aria-label="诗目" style="flex: 1 1 300px; max-width: 480px; min-width: 0; display: flex; flex-direction: column; gap: 28px">
+        <div style="display: flex; flex-direction: column; gap: 10px">
+          <label for="poemSearch" style="font-size: 14px; letter-spacing: .2em; color: #4f4a43">搜索</label>
+          <input id="poemSearch" type="search" value="{{q}}" onChange="{{onSearch}}" placeholder="诗题、作者或名句" style="font-family: inherit; font-size: 18px; letter-spacing: .1em; padding: 12px 4px; border: none; border-bottom: 1px solid #23211d; background: transparent; color: #23211d; outline-offset: 4px">
+        </div>
+
+        <div role="group" aria-label="诗词分类" style="display: flex; flex-wrap: wrap; gap: 4px 20px">
+          <sc-for list="{{cats}}" as="cat" hint-placeholder-count="5">
+            <button type="button" aria-pressed="{{cat.pressed}}" onClick="{{cat.pick}}" style="background: none; border: none; border-bottom: 1px solid {{cat.line}}; padding: 10px 0; min-height: 44px; font-size: 16px; letter-spacing: .2em; color: {{cat.color}}">{{cat.name}}<span style="font-size: 12px; color: #625c52; letter-spacing: .05em; margin-left: 6px">{{cat.count}}</span></button>
+          </sc-for>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 6px">
+          <p aria-live="polite" style="margin: 0 0 6px; font-size: 13px; letter-spacing: .15em; color: #625c52">{{resultLabel}}</p>
+          <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; border-bottom: 1px solid rgba(35,33,29,.18)">
+            <sc-for list="{{poems}}" as="item" hint-placeholder-count="7">
+              <li style="border-top: 1px solid rgba(35,33,29,.18)">
+                <button type="button" aria-current="{{item.current}}" onClick="{{item.pick}}" style="width: 100%; display: flex; align-items: baseline; gap: 16px; padding: 16px 12px; min-height: 44px; border: none; background: {{item.bg}}; text-align: left">
+                  <span style="flex: 1 1 auto; min-width: 0; font-size: 18px; letter-spacing: .18em; color: {{item.titleColor}}">{{item.title}}</span>
+                  <span style="font-size: 14px; letter-spacing: .15em; color: #625c52; white-space: nowrap">{{item.author}}</span>
+                  <span style="font-size: 12px; letter-spacing: .05em; color: #625c52; white-space: nowrap; min-width: 3.5em; text-align: right">{{item.count}} 字</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{empty}}" hint-placeholder-val="{{false}}">
+            <p style="margin: 0; padding: 24px 12px; font-size: 15px; letter-spacing: .12em; color: #625c52">没有找到这首诗，换个字词试试。</p>
+          </sc-if>
+          <sc-if value="{{hasMore}}" hint-placeholder-val="{{false}}">
+            <button type="button" style="align-self: flex-start; margin-top: 12px; background: none; border: none; border-bottom: 1px solid #23211d; padding: 10px 2px; min-height: 44px; font-size: 15px; letter-spacing: .3em">再看 12 首</button>
+          </sc-if>
+        </div>
+
+        <sc-if value="{{locked}}" hint-placeholder-val="{{true}}">
+          <div style="display: flex; flex-direction: column; gap: 6px; padding: 18px 20px; border: 1px dashed rgba(35,33,29,.35)">
+            <span style="font-size: 15px; letter-spacing: .25em; color: #4f4a43">自己写一段</span>
+            <span style="font-size: 13px; letter-spacing: .12em; color: #625c52">暂未开放 · [待原作者授权后确认]</span>
+          </div>
+        </sc-if>
+        <sc-if value="{{open}}" hint-placeholder-val="{{false}}">
+          <a href="Create.dc.html" style="display: flex; flex-direction: column; gap: 6px; padding: 18px 20px; border: 1px solid rgba(35,33,29,.35); text-decoration: none">
+            <span style="font-size: 15px; letter-spacing: .25em">自己写一段</span>
+            <span style="font-size: 13px; letter-spacing: .12em; color: #625c52">输入任意文字，写成小楷</span>
+          </a>
+        </sc-if>
+      </section>
+
+      <article aria-labelledby="poemTitle" style="flex: 1 1 440px; min-width: 0; box-sizing: border-box; padding: 44px clamp(20px, 4vw, 48px) 40px; background: #f8f4ea; box-shadow: 0 18px 40px rgba(35,33,29,.10), 0 0 0 1px rgba(80,66,48,.12); display: flex; flex-direction: column; gap: 32px">
+        <div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 24px">
+          <h2 id="poemTitle" style="margin: 0; font-size: 28px; font-weight: 400; letter-spacing: .3em">{{poem.title}}</h2>
+          <p style="margin: 0; font-size: 14px; letter-spacing: .2em; color: #625c52">{{poem.author}} · {{poem.cat}} · {{poem.count}} 字</p>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; border-top: 1px solid rgba(35,33,29,.14); border-bottom: 1px solid rgba(35,33,29,.14); padding: 28px 0">
+          <div style="writing-mode: vertical-rl; height: 460px; max-width: 100%; overflow-x: auto; overflow-y: hidden; white-space: pre-line; font-size: 20px; line-height: 1.95; letter-spacing: .26em; color: #2c2924">{{poem.text}}</div>
+        </div>
+
+        <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px 24px">
+          <p style="margin: 0; font-size: 13px; letter-spacing: .15em; color: #625c52">下一步选择繁简与格式</p>
+          <a href="Create.dc.html" style="text-decoration: none; font-size: 16px; letter-spacing: .6em; padding: 14px 22px 14px 32px; border-top: 1px solid #23211d; border-bottom: 1px solid #23211d; min-height: 44px; box-sizing: border-box">写成小楷</a>
+        </div>
+      </article>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#a8352b","options":["#a8352b","#8c2f28","#b4552d","#23211d"]},"motion":{"editor":"boolean","default":true},"customText":{"editor":"enum","default":"locked","options":["locked","open","hidden"]},"$preview":{"width":1440,"height":1130}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const accent = this.props.accent ?? '#a8352b';
+    const motion = this.props.motion ?? true;
+    const custom = this.props.customText ?? 'locked';
+    const s = this.state || {};
+    const cat = s.cat ?? '古文名篇';
+    const q = (s.q ?? '').trim();
+    // 分类总数取自 docs/anthology.json；下面只放每类几首示例
+    const totals = { '唐诗': 366, '宋词': 282, '诗经楚辞': 305, '古文名篇': 7, '经文国学': 3 };
+    const all = [
+        { id: 'p0002', cat: '唐诗', title: '山居秋暝', author: '王维', count: 40, text: "空山新雨后，天气晚来秋。\n明月松间照，清泉石上流。\n竹喧归浣女，莲动下渔舟。\n随意春芳歇，王孙自可留。" },
+        { id: 'p0138', cat: '唐诗', title: '春晓', author: '孟浩然', count: 20, text: "春眠不觉晓，处处闻啼鸟。\n夜来风雨声，花落知多少。" },
+        { id: 'p0324', cat: '唐诗', title: '静夜思', author: '李白', count: 20, text: "床前看月光，疑是地上霜。\n举头望山月，低头思故乡。" },
+        { id: 'p0374', cat: '唐诗', title: '登鹳雀楼', author: '王之涣', count: 20, text: "白日依山尽，黄河入海流。\n欲穷千里目，更上一层楼。" },
+        { id: 'p0001', cat: '唐诗', title: '春江花月夜', author: '张若虚', count: 252, text: "春江潮水连海平，海上明月共潮生。\n灩灩随波千万里，何处春江无月明。\n江流宛转绕芳甸，月照花林皆似霰。\n空里流霜不觉飞，汀上白沙看不见。\n江天一色无纤尘，皎皎空中孤月轮。\n江畔何人初见月，江月何年初照人。\n人生代代无穷已，江月年年望相似。\n不知江月待何人，但见长江送流水。\n白云一片去悠悠，青枫浦上不胜愁。\n谁家今夜扁舟子，何处相思明月楼。\n可怜楼上月徘徊，应照离人妆镜台。\n玉户帘中卷不去，捣衣砧上拂还来。\n此时相望不相闻，愿逐月华流照君。\n鸿雁长飞光不度，鱼龙潜跃水成文。\n昨夜闲潭梦落花，可怜春半不还家。\n江水流春去欲尽，江潭落月复西斜。\n斜月沉沉藏海雾，碣石潇湘无限路。\n不知乘月几人归，落月摇情满江树。" },
+        { id: 'p0005', cat: '唐诗', title: '将进酒', author: '李白', count: 176, text: "君不见黄河之水天上来，奔流到海不复回。\n君不见高堂明镜悲白发，朝如青丝暮成雪。\n人生得意须尽欢，莫使金樽空对月。\n天生我材必有用，千金散尽还复来。\n烹羊宰牛且为乐，会须一饮三百杯。\n岑夫子，丹丘生，将进酒，杯莫停。\n与君歌一曲，请君为我倾耳听。\n钟鼓馔玉不足贵，但愿长醉不复醒。\n古来圣贤皆寂寞，惟有饮者留其名。\n陈王昔时宴平乐，斗酒十千恣欢谑。\n主人何为言少钱，径须沽取对君酌。\n五花马，千金裘，呼儿将出换美酒，与尔同销万古愁。" },
+        { id: 'p0006', cat: '宋词', title: '水调歌头', author: '苏轼', count: 95, text: "明月几时有，把酒问青天。\n不知天上宫阙，今夕是何年。\n我欲乘风归去，又恐琼楼玉宇，高处不胜寒。\n起舞弄清影，何似在人间。\n转朱阁，低绮户，照无眠。\n不应有恨，何事长向别时圆。\n人有悲欢离合，月有阴晴圆缺，此事古难全。\n但愿人长久，千里共婵娟。" },
+        { id: 'p0008', cat: '宋词', title: '念奴娇·赤壁怀古', author: '苏轼', count: 100, text: "大江东去，浪淘尽，千古风流人物。\n故垒西边，人道是，三国周郎赤壁。\n乱石穿空，惊涛拍岸，卷起千堆雪。\n江山如画，一时多少豪杰。\n遥想公瑾当年，小乔初嫁了，雄姿英发。\n羽扇纶巾，谈笑间，樯橹灰飞烟灭。\n故国神游，多情应笑我，早生华发。\n人生如梦，一尊还酹江月。" },
+        { id: 'p0583', cat: '宋词', title: '声声慢', author: '李清照', count: 96, text: "寻寻觅觅，冷冷清清，凄凄惨惨戚戚。\n乍暖还寒时候，最难将息。\n三杯两盏淡酒，怎敌他、晚来风急。\n雁过也，正伤心，却是旧时相识。\n满地黄花堆积。\n憔悴损，如今有谁摘。\n守着窗儿，独自怎生得黑。\n梧桐更兼细雨，到黄昏、点点滴滴。\n这次第，怎一个、愁字了得。" },
+        { id: 'p0521', cat: '宋词', title: '雨霖铃', author: '柳永', count: 102, text: "寒蝉凄切。\n对长亭晚，骤雨初歇。\n都门帐饮无绪，留恋处、兰舟催发。\n执手相看泪眼，竟无语凝噎。\n念去去、千里烟波，暮霭沈沈楚天阔。\n多情自古伤离别。\n更那堪、冷落清秋节。\n今宵酒醒何处，杨柳岸、晓风残月。\n此去经年，应是良辰、好景虚设。\n便纵有、千种风情，更与何人说。" },
+        { id: 'p0593', cat: '宋词', title: '青玉案', author: '辛弃疾', count: 67, text: "东风夜放花千树。\n更吹落、星如雨。\n宝马雕车香满路。\n凤箫声动，玉壶光转，一夜鱼龙舞。\n蛾儿雪柳黄金缕。\n笑语盈盈暗香去。\n众里寻他千百度。\n蓦然回首，那人却在，灯火阑珊处。" },
+        { id: 'p0659', cat: '诗经楚辞', title: '关雎', author: '佚名', count: 80, text: "关关雎鸠，在河之洲。\n窈窕淑女，君子好逑。\n参差荇菜，左右流之。\n窈窕淑女，寤寐求之。\n求之不得，寤寐思服。\n悠哉悠哉，辗转反侧。\n参差荇菜，左右采之。\n窈窕淑女，琴瑟友之。\n参差荇菜，左右芼之。\n窈窕淑女，钟鼓乐之。" },
+        { id: 'p0787', cat: '诗经楚辞', title: '蒹葭', author: '佚名', count: 99, text: "蒹葭苍苍，白露为霜。\n所谓伊人，在水一方。\n溯洄从之，道阻且长。\n溯游从之，宛在水中央。\n蒹葭萋萋，白露未晞。\n所谓伊人，在水之湄。\n溯洄从之，道阻且跻。\n溯游从之，宛在水中坻。\n蒹葭采采，白露未已。\n所谓伊人，在水之涘。\n溯洄从之，道阻且右。\n溯游从之，宛在水中沚。" },
+        { id: 'p0664', cat: '诗经楚辞', title: '桃夭', author: '佚名', count: 48, text: "桃之夭夭，灼灼其华。\n之子于归，宜其室家。\n桃之夭夭，有蕡其实。\n之子于归，宜其家室。\n桃之夭夭，其叶蓁蓁。\n之子于归，宜其家人。" },
+        { id: 'p0749', cat: '诗经楚辞', title: '子衿', author: '佚名', count: 49, text: "青青子衿，悠悠我心。\n纵我不往，子宁不嗣音？\n青青子佩，悠悠我思。\n纵我不往，子宁不来？\n挑兮达兮，在城阙兮。\n一日不见，如三月兮。" },
+        { id: 'p0825', cat: '诗经楚辞', title: '采薇', author: '佚名', count: 192, text: "采薇采薇，薇亦作止。\n曰归曰归，岁亦莫止。\n靡室靡家，玁狁之故。\n不遑启居，玁狁之故。\n采薇采薇，薇亦柔止。\n曰归曰归，心亦忧止。\n忧心烈烈，载饥载渴。\n我戍未定，靡使归聘。\n采薇采薇，薇亦刚止。\n曰归曰归，岁亦阳止。\n王事靡盬，不遑启处。\n忧心孔疚，我行不来！\n彼尔维何？\n维常之华。\n彼路斯何？\n君子之车。\n戎车既驾，四牡业业。\n岂敢定居？\n一月三捷。\n驾彼四牡，四牡骙骙。\n君子所依，小人所腓。\n四牡翼翼，象弭鱼服。\n岂不日戒？\n玁狁孔棘！\n昔我往矣，杨柳依依。\n今我来思，雨雪霏霏。\n行道迟迟，载渴载饥。\n我心伤悲，莫知我哀！" },
+        { id: 'p0010', cat: '古文名篇', title: '爱莲说', author: '周敦颐', count: 94, text: "水陆草木之花，可爱者甚蕃。晋陶渊明独爱菊。自李唐来，世人甚爱牡丹。予独爱莲之出淤泥而不染，濯清涟而不妖，中通外直，不蔓不枝，香远益清，亭亭净植，可远观而不可亵玩焉。予谓菊，花之隐逸者也；牡丹，花之富贵者也；莲，花之君子者也。" },
+        { id: 'p0009', cat: '古文名篇', title: '陋室铭', author: '刘禹锡', count: 81, text: "山不在高，有仙则名。水不在深，有龙则灵。斯是陋室，惟吾德馨。苔痕上阶绿，草色入帘青。谈笑有鸿儒，往来无白丁。可以调素琴，阅金经。无丝竹之乱耳，无案牍之劳形。南阳诸葛庐，西蜀子云亭。孔子云：何陋之有。" },
+        { id: 'p0004', cat: '古文名篇', title: '兰亭集序', author: '王羲之', count: 124, text: "永和九年，岁在癸丑，暮春之初，会于会稽山阴之兰亭，修禊事也。羣贤毕至，少长咸集。此地有崇山峻岭，茂林修竹，又有清流激湍，映带左右，引以为流觞曲水，列坐其次。虽无丝竹管弦之盛，一觞一咏，亦足以畅叙幽情。是日也，天朗气清，惠风和畅。仰观宇宙之大，俯察品类之盛，所以游目骋怀，足以极视听之娱，信可乐也。" },
+        { id: 'p0011', cat: '古文名篇', title: '诫子书', author: '诸葛亮', count: 86, text: "夫君子之行，静以修身，俭以养德。非淡泊无以明志，非宁静无以致远。夫学须静也，才须学也，非学无以广才，非志无以成学。淫慢则不能励精，险躁则不能治性。年与时驰，意与岁去，遂成枯落，多不接世，悲守穷庐，将复何及。" },
+        { id: 'p0012', cat: '古文名篇', title: '岳阳楼记', author: '范仲淹', count: 144, text: "庆历四年春，滕子京谪守巴陵郡。越明年，政通人和，百废具兴，乃重修岳阳楼，增其旧制，刻唐贤今人诗赋于其上，属予作文以记之。予观夫巴陵胜状，在洞庭一湖。衔远山，吞长江，浩浩汤汤，横无际涯，朝晖夕阴，气象万千。嗟夫！予尝求古仁人之心，或异二者之为，何哉？不以物喜，不以己悲，居庙堂之高则忧其民，处江湖之远则忧其君。先天下之忧而忧，后天下之乐而乐欤！" },
+        { id: 'p0013', cat: '古文名篇', title: '前赤壁赋', author: '苏轼', count: 105, text: "壬戌之秋，七月既望，苏子与客泛舟游于赤壁之下。清风徐来，水波不兴。举酒属客，诵明月之诗，歌窈窕之章。少焉，月出于东山之上，徘徊于斗牛之间。白露横江，水光接天。纵一苇之所如，凌万顷之茫然。浩浩乎如冯虚御风，而不知其所止；飘飘乎如遗世独立，羽化而登仙。" },
+        { id: 'p0014', cat: '古文名篇', title: '滕王阁序', author: '王勃', count: 96, text: "时维九月，序属三秋。潦水尽而寒潭清，烟光凝而暮山紫。俨骖𬴂于上路，访风景于崇阿；临帝子之长洲，得天人之旧馆。层峦耸翠，上出重霄；飞阁流丹，下临无地。落霞与孤鹜齐飞，秋水共长天一色。渔舟唱晚，响穷彭蠡之滨；雁阵惊寒，声断衡阳之浦。" },
+        { id: 'p0015', cat: '经文国学', title: '道德经·第一章', author: '老子', count: 109, text: "道可道，非常道；名可名，非常名。无名天地之始，有名万物之母。故常无欲，以观其妙；常有欲，以观其徼。此两者同出而异名，同谓之玄，玄之又玄，众妙之门。上善若水。水善利万物而不争，处众人之所恶，故几于道。居善地，心善渊，与善仁，言善信，政善治，事善能，动善时。夫唯不争，故无尤。" },
+        { id: 'p0016', cat: '经文国学', title: '大学·开篇', author: '曾子', count: 122, text: "大学之道，在明明德，在亲民，在止于至善。知止而后有定，定而后能静，静而后能安，安而后能虑，虑而后能得。物有本末，事有终始，知所先后，则近道矣。古之欲明明德于天下者，先治其国；欲治其国者，先齐其家；欲齐其家者，先修其身；欲修其身者，先正其心；欲正其心者，先诚其意；欲诚其意者，先致其知，致知在格物。" },
+        { id: 'p0003', cat: '经文国学', title: '般若波罗蜜多心经', author: '春霖敬书', count: 147, text: "般若波罗蜜多心经。观自在菩萨，行深般若波罗蜜多时，照见五蕴皆空，度一切苦厄。舍利子，色不异空，空不异色，色即是空，空即是色，受想行识，亦复如是。舍利子，是诸法空相，不生不灭，不垢不净，不增不减。是故空中无色，无受想行识，无眼耳鼻舌身意，无色声香味触法，无眼界，乃至无意识界，无无明，亦无无明尽，乃至无老死，亦无老死尽。无苦集灭道，无智亦无得，以无所得故。" }
+    ];
+    const list = q ? all.filter((p) => (p.title + p.author + p.text).includes(q)) : all.filter((p) => p.cat === cat);
+    const current = all.find((p) => p.id === (s.id ?? 'p0010')) || all[0];
+    return {
+      accent,
+      accentWash: accent + '55',
+      play: motion ? 'running' : 'paused',
+      q: s.q ?? '',
+      onSearch: (e) => this.setState({ q: e.target.value }),
+      cats: Object.keys(totals).map((name) => {
+        const on = !q && name === cat;
+        return { name, count: totals[name], pressed: on ? 'true' : 'false', color: on ? accent : '#23211d', line: on ? accent : 'transparent', pick: () => this.setState({ cat: name, q: '' }) };
+      }),
+      resultLabel: q ? '「' + q + '」找到 ' + list.length + ' 首' : cat + ' · 共 ' + totals[cat] + ' 首',
+      poems: list.map((p) => {
+        const on = p.id === current.id;
+        return { ...p, current: on ? 'true' : 'false', bg: on ? 'rgba(35,33,29,.06)' : 'transparent', titleColor: on ? accent : '#23211d', pick: () => this.setState({ id: p.id }) };
+      }),
+      empty: list.length === 0,
+      hasMore: !q && totals[cat] > list.length,
+      poem: current,
+      locked: custom === 'locked',
+      open: custom === 'open'
+    };
+  }
+}
+</script>
+</body>
+</html>

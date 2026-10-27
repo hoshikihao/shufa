@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>星树书房 · 首页</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;600&amp;display=swap">
+<style>
+body{margin:0;background:#f3eee2}
+a{color:#23211d}a:hover{color:#a8352b}
+@keyframes inkBloom{0%{transform:scale(.12);opacity:0}30%{opacity:1}100%{transform:scale(1);opacity:1}}
+@keyframes inkDrift{0%{transform:translate(0,0) scale(1)}50%{transform:translate(4%,-3%) scale(1.07)}100%{transform:translate(-3%,2%) scale(.95)}}
+@keyframes inkMorph{0%{border-radius:42% 58% 63% 37%/41% 44% 56% 59%}50%{border-radius:58% 42% 38% 62%/55% 61% 39% 45%}100%{border-radius:47% 53% 55% 45%/62% 38% 62% 38%}}
+@keyframes scrollSway{0%{transform:rotate(-.45deg)}100%{transform:rotate(.45deg)}}
+@keyframes mountainPan{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes mistBreath{0%,100%{opacity:.55}50%{opacity:.9}}
+@keyframes riseIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fallIn{from{opacity:0;transform:translateY(-18px)}to{opacity:1;transform:translateY(0)}}
+@media (prefers-reduced-motion: reduce){*{animation:none !important}}
+</style>
+</helmet>
+
+<div style="font-family: 'Noto Serif SC', 'Songti SC', serif; background: #f3eee2; color: #23211d; overflow: hidden">
+
+  <section style="position: relative; min-height: 860px; box-sizing: border-box; padding: 0 6vw">
+
+    <div aria-hidden="true" style="position: absolute; inset: 0; pointer-events: none">
+      <div style="position: absolute; width: 760px; height: 760px; right: -120px; top: -180px; animation: inkBloom 4.5s cubic-bezier(.2,.7,.2,1) both">
+        <div style="width: 100%; height: 100%; border-radius: 50%; background: radial-gradient(closest-side, rgba(35,33,29,.30), rgba(35,33,29,.12) 55%, rgba(35,33,29,0)); filter: blur(22px); animation: inkMorph 18s ease-in-out infinite alternate, inkDrift 28s ease-in-out infinite alternate; animation-play-state: {{play}}"></div>
+      </div>
+      <div style="position: absolute; width: 520px; height: 520px; left: -160px; top: 300px; animation: inkBloom 5.5s cubic-bezier(.2,.7,.2,1) .8s both">
+        <div style="width: 100%; height: 100%; border-radius: 50%; background: radial-gradient(closest-side, rgba(35,33,29,.20), rgba(35,33,29,.07) 60%, rgba(35,33,29,0)); filter: blur(22px); animation: inkMorph 18s ease-in-out infinite alternate, inkDrift 34s ease-in-out infinite alternate-reverse; animation-play-state: {{play}}"></div>
+      </div>
+      <div style="position: absolute; width: 180px; height: 180px; left: 46%; top: 120px; animation: inkBloom 3.2s cubic-bezier(.2,.7,.2,1) 1.6s both">
+        <div style="width: 100%; height: 100%; border-radius: 50%; background: radial-gradient(closest-side, {{accentWash}}, rgba(168,53,43,0)); filter: blur(22px); animation: inkMorph 18s ease-in-out infinite alternate, inkDrift 22s ease-in-out infinite alternate; animation-play-state: {{play}}"></div>
+      </div>
+
+      <div style="position: absolute; left: 0; right: 0; bottom: 0; height: 300px; overflow: hidden">
+        <div style="position: absolute; left: 0; bottom: 40px; width: 200%; height: 240px; animation: mountainPan 160s linear infinite; animation-play-state: {{play}}">
+          <svg viewBox="0 0 2880 240" preserveAspectRatio="none" style="width: 100%; height: 100%; display: block">
+            <path d="M0 170 C140 120 220 60 340 90 C430 112 480 40 600 34 C720 28 780 120 880 128 C980 136 1040 70 1150 62 C1260 54 1330 140 1400 162 L1440 170 L1440 240 L0 240 Z" fill="#23211d" opacity=".06"></path>
+            <path transform="translate(1440 0)" d="M0 170 C140 120 220 60 340 90 C430 112 480 40 600 34 C720 28 780 120 880 128 C980 136 1040 70 1150 62 C1260 54 1330 140 1400 162 L1440 170 L1440 240 L0 240 Z" fill="#23211d" opacity=".06"></path>
+          </svg>
+        </div>
+        <div style="position: absolute; left: 0; bottom: 0; width: 200%; height: 190px; animation: mountainPan 90s linear infinite; animation-play-state: {{play}}">
+          <svg viewBox="0 0 2880 190" preserveAspectRatio="none" style="width: 100%; height: 100%; display: block">
+            <path d="M0 150 C100 128 180 80 280 96 C380 112 420 150 520 140 C640 128 700 70 820 78 C940 86 990 146 1100 150 C1210 154 1290 112 1380 132 L1440 150 L1440 190 L0 190 Z" fill="#23211d" opacity=".11"></path>
+            <path transform="translate(1440 0)" d="M0 150 C100 128 180 80 280 96 C380 112 420 150 520 140 C640 128 700 70 820 78 C940 86 990 146 1100 150 C1210 154 1290 112 1380 132 L1440 150 L1440 190 L0 190 Z" fill="#23211d" opacity=".11"></path>
+          </svg>
+        </div>
+        <div style="position: absolute; left: 0; right: 0; bottom: 70px; height: 90px; background: linear-gradient(rgba(243,238,226,0), rgba(243,238,226,.8) 50%, rgba(243,238,226,0)); animation: mistBreath 12s ease-in-out infinite; animation-play-state: {{play}}"></div>
+        <div style="position: absolute; left: 0; right: 0; bottom: 0; height: 110px; background: linear-gradient(rgba(243,238,226,0), #f3eee2 70%)"></div>
+      </div>
+    </div>
+
+    <header style="position: relative; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; padding-top: 32px">
+      <a href="#top" aria-label="星树书房 首页" style="display: flex; text-decoration: none">
+        <span aria-hidden="true" style="width: 44px; height: 56px; box-sizing: border-box; background: {{accent}}; color: #f3eee2; writing-mode: vertical-rl; font-size: 18px; font-weight: 600; letter-spacing: .12em; display: flex; align-items: center; justify-content: center; border-radius: 3px">星樹</span>
+      </a>
+      <nav aria-label="主导航" style="display: flex; gap: 36px; font-size: 15px; letter-spacing: .3em">
+        <a href="Poems.dc.html" style="text-decoration: none; padding: 12px 0">诗词</a>
+        <a href="#works" style="text-decoration: none; padding: 12px 0">作品</a>
+        <a href="#about" style="text-decoration: none; padding: 12px 0">关于</a>
+      </nav>
+    </header>
+
+    <div style="position: relative; max-width: 1180px; margin: 0 auto; min-height: 780px; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 56px 72px; padding: 24px 0 170px">
+
+      <div style="flex: 0 1 240px; display: flex; flex-direction: column; align-items: flex-end; gap: 48px; animation: riseIn 1.6s ease-out 1.2s both">
+        <div style="display: flex; flex-direction: row-reverse; gap: 30px; align-items: flex-start">
+          <h1 style="margin: 0; writing-mode: vertical-rl; font-size: 60px; font-weight: 300; letter-spacing: .45em; line-height: 1">星树书房</h1>
+          <p style="margin: 0; writing-mode: vertical-rl; padding-top: 3.4em; font-size: 18px; letter-spacing: .42em; line-height: 2.1; color: #4f4a43">择一首诗<br>写成一幅小楷</p>
+        </div>
+        <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 14px">
+          <a href="Poems.dc.html" style="text-decoration: none; font-size: 16px; letter-spacing: .6em; padding: 14px 22px 14px 32px; border-top: 1px solid #23211d; border-bottom: 1px solid #23211d; min-height: 44px; box-sizing: border-box">择一首诗</a>
+          <p style="margin: 0; font-size: 13px; letter-spacing: .15em; color: #625c52; white-space: nowrap">唐诗 · 宋词 · 诗经楚辞 · 古文，963 首</p>
+        </div>
+      </div>
+
+      <figure id="works" style="margin: 0; flex: 0 1 420px; min-width: 300px; display: flex; flex-direction: column; align-items: center; gap: 22px; animation: fallIn 2s ease-out .4s both">
+        <div style="width: 100%; display: flex; flex-direction: column; align-items: center; transform-origin: 50% 0; animation: scrollSway 9s ease-in-out infinite alternate; animation-play-state: {{play}}">
+          <svg viewBox="0 0 440 54" style="width: 100%; height: 54px; display: block" aria-hidden="true">
+            <path d="M96 54 L220 6 L344 54" fill="none" stroke="#6b5a48" stroke-width="1.2"></path>
+            <circle cx="220" cy="6" r="3.5" fill="#3b2e24"></circle>
+          </svg>
+          <div style="width: 100%; height: 11px; border-radius: 6px; background: linear-gradient(#5f4b3a, #36291f)"></div>
+          <div style="width: calc(100% - 28px); box-sizing: border-box; padding: 58px 20px 34px; background: #cbc1aa; box-shadow: 0 26px 50px rgba(35,33,29,.20), 0 3px 8px rgba(35,33,29,.10)">
+            <div style="padding: 7px; background: #ddd4c0">
+              <img src="/_blob/89eda01835f13b28f1ed8519c9a3aa2b" alt="小楷作品样张：周敦颐《爱莲说》，繁体，无格素笺" style="width: 100%; aspect-ratio: 1276 / 1600; display: block; box-shadow: 0 0 0 1px rgba(80,66,48,.22)">
+            </div>
+          </div>
+          <div style="width: calc(100% + 24px); height: 16px; border-radius: 8px; background: linear-gradient(90deg, #241b14 0, #241b14 22px, #4a3a2d 22px, #3a2d22 50%, #4a3a2d calc(100% - 22px), #241b14 calc(100% - 22px))"></div>
+        </div>
+        <figcaption style="font-size: 14px; letter-spacing: .3em; color: #625c52">周敦颐　爱莲说　繁体 · 素笺</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section id="shelf" style="position: relative; max-width: 960px; margin: 0 auto; padding: 24px 6vw 96px; box-sizing: border-box; display: flex; flex-direction: column; gap: 40px">
+    <div style="display: flex; flex-direction: column; gap: 12px">
+      <h2 style="margin: 0; font-size: 30px; font-weight: 400; letter-spacing: .3em">从一首诗开始</h2>
+      <p style="margin: 0; font-size: 15px; letter-spacing: .12em; color: #625c52">选好诗，选繁体或简体、有格或无格，即可生成小楷作品。</p>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 10px">
+      <label for="poemSearch" style="font-size: 14px; letter-spacing: .2em; color: #4f4a43">搜索</label>
+      <input id="poemSearch" type="search" placeholder="诗题、作者或名句" style="font-family: inherit; font-size: 18px; letter-spacing: .1em; padding: 14px 4px; border: none; border-bottom: 1px solid #23211d; background: transparent; color: #23211d; outline-offset: 4px">
+    </div>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 12px 28px" role="list" aria-label="诗词分类">
+      <sc-for list="{{cats}}" as="cat" hint-placeholder-count="5">
+        <a href="Poems.dc.html" role="listitem" style="text-decoration: none; font-size: 16px; letter-spacing: .2em; padding: 10px 0; min-height: 44px; box-sizing: border-box">{{cat.name}}<span style="font-size: 13px; color: #625c52; letter-spacing: .05em; margin-left: 8px">{{cat.count}}</span></a>
+      </sc-for>
+    </div>
+  </section>
+
+  <footer id="about" style="max-width: 960px; margin: 0 auto; padding: 48px 6vw 64px; box-sizing: border-box; border-top: 1px solid rgba(35,33,29,.18); display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px; font-size: 13px; letter-spacing: .15em; color: #625c52">
+    <span>星树书房 · 个人非商业项目</span>
+    <span>书法渲染：[待原作者授权后确认署名]</span>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#a8352b","options":["#a8352b","#8c2f28","#b4552d","#23211d"]},"motion":{"editor":"boolean","default":true},"$preview":{"width":1440,"height":1600}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const accent = this.props.accent ?? '#a8352b';
+    const motion = this.props.motion ?? true;
+    return {
+      accent,
+      accentWash: accent + '55',
+      play: motion ? 'running' : 'paused',
+      cats: [
+        { name: '唐诗', count: '366' },
+        { name: '宋词', count: '282' },
+        { name: '诗经楚辞', count: '305' },
+        { name: '古文名篇', count: '7' },
+        { name: '经文国学', count: '3' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

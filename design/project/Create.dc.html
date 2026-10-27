@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>星树书房 · 生成</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;600&amp;display=swap">
+<style>
+body{margin:0;background:#f3eee2}
+a{color:#23211d}a:hover{color:#a8352b}
+button{font-family:inherit;cursor:pointer}
+button:disabled{cursor:not-allowed}
+.sr{position:absolute;opacity:0;width:1px;height:1px;margin:0;pointer-events:none}
+label:has(.sr:focus-visible){outline:2px solid #23211d;outline-offset:3px}
+@keyframes inkBloom{0%{transform:scale(.12);opacity:0}30%{opacity:1}100%{transform:scale(1);opacity:1}}
+@keyframes inkDrift{0%{transform:translate(0,0) scale(1)}50%{transform:translate(4%,-3%) scale(1.07)}100%{transform:translate(-3%,2%) scale(.95)}}
+@keyframes inkMorph{0%{border-radius:42% 58% 63% 37%/41% 44% 56% 59%}50%{border-radius:58% 42% 38% 62%/55% 61% 39% 45%}100%{border-radius:47% 53% 55% 45%/62% 38% 62% 38%}}
+@keyframes scrollSway{0%{transform:rotate(-.45deg)}100%{transform:rotate(.45deg)}}
+@keyframes inkPulse{0%,100%{transform:scale(.7);opacity:.55}50%{transform:scale(1.15);opacity:1}}
+@keyframes unroll{from{clip-path:inset(0 0 100% 0)}to{clip-path:inset(0 0 0 0)}}
+@media (prefers-reduced-motion: reduce){*{animation:none !important}}
+</style>
+</helmet>
+
+<div style="position: relative; font-family: 'Noto Serif SC', 'Songti SC', serif; background: #f3eee2; color: #23211d; overflow: hidden; padding: 0 6vw">
+
+  <div aria-hidden="true" style="position: absolute; width: 620px; height: 620px; right: -200px; top: -260px; pointer-events: none">
+    <div style="width: 100%; height: 100%; border-radius: 50%; background: radial-gradient(closest-side, rgba(35,33,29,.20), rgba(35,33,29,.07) 55%, rgba(35,33,29,0)); filter: blur(22px); animation: inkMorph 18s ease-in-out infinite alternate, inkDrift 30s ease-in-out infinite alternate; animation-play-state: {{play}}"></div>
+  </div>
+
+  <header style="position: relative; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; padding-top: 32px">
+    <a href="Main.dc.html" aria-label="星树书房 首页" style="display: flex; text-decoration: none">
+      <span aria-hidden="true" style="width: 44px; height: 56px; box-sizing: border-box; background: {{accent}}; color: #f3eee2; writing-mode: vertical-rl; font-size: 18px; font-weight: 600; letter-spacing: .12em; display: flex; align-items: center; justify-content: center; border-radius: 3px">星樹</span>
+    </a>
+    <nav aria-label="主导航" style="display: flex; gap: 36px; font-size: 15px; letter-spacing: .3em">
+      <a href="Poems.dc.html" style="text-decoration: none; padding: 12px 0; color: {{accent}}; border-bottom: 1px solid {{accent}}">诗词</a>
+      <a href="Main.dc.html#works" style="text-decoration: none; padding: 12px 0">作品</a>
+      <a href="Main.dc.html#about" style="text-decoration: none; padding: 12px 0">关于</a>
+    </nav>
+  </header>
+
+  <main style="position: relative; max-width: 1180px; margin: 0 auto; padding: 40px 0 112px; display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 64px 56px">
+
+    <section aria-label="书写设置" style="flex: 1 1 300px; max-width: 420px; min-width: 0; display: flex; flex-direction: column; gap: 40px">
+      <a href="Poems.dc.html" style="align-self: flex-start; text-decoration: none; font-size: 14px; letter-spacing: .2em; color: #625c52; padding: 12px 0">← 换一首诗</a>
+
+      <div style="display: flex; flex-direction: column; gap: 10px">
+        <h1 style="margin: 0; font-size: 40px; font-weight: 400; letter-spacing: .3em">爱莲说</h1>
+        <p style="margin: 0; font-size: 14px; letter-spacing: .2em; color: #625c52">周敦颐 · 古文名篇 · 94 字</p>
+      </div>
+
+      <fieldset style="margin: 0; padding: 0; border: none; display: flex; flex-direction: column; gap: 14px">
+        <legend style="padding: 0; margin-bottom: 14px; font-size: 14px; letter-spacing: .3em; color: #4f4a43">字体</legend>
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
+          <label style="display: flex; flex-direction: column; gap: 4px; padding: 16px 18px; min-height: 44px; border: 1px solid {{tradLine}}; background: {{tradBg}}; cursor: pointer">
+            <input class="sr" type="radio" name="edition" value="trad" checked="{{isTrad}}" onChange="{{pickTrad}}">
+            <span style="font-size: 20px; letter-spacing: .3em">繁體</span>
+            <span style="font-size: 12px; letter-spacing: .15em; color: #625c52">传统字形</span>
+          </label>
+          <label style="display: flex; flex-direction: column; gap: 4px; padding: 16px 18px; min-height: 44px; border: 1px solid {{simpLine}}; background: {{simpBg}}; cursor: pointer">
+            <input class="sr" type="radio" name="edition" value="simp" checked="{{isSimp}}" onChange="{{pickSimp}}">
+            <span style="font-size: 20px; letter-spacing: .3em">简体</span>
+            <span style="font-size: 12px; letter-spacing: .15em; color: #625c52">通行字形</span>
+          </label>
+        </div>
+      </fieldset>
+
+      <fieldset style="margin: 0; padding: 0; border: none; display: flex; flex-direction: column; gap: 14px">
+        <legend style="padding: 0; margin-bottom: 14px; font-size: 14px; letter-spacing: .3em; color: #4f4a43">纸样</legend>
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
+          <label style="display: flex; align-items: center; gap: 14px; padding: 14px 16px; min-height: 44px; border: 1px solid {{cleanLine}}; background: {{cleanBg}}; cursor: pointer">
+            <input class="sr" type="radio" name="style" value="clean" checked="{{isClean}}" onChange="{{pickClean}}">
+            <span aria-hidden="true" style="flex: none; width: 36px; height: 46px; background: #f6f1e4; box-shadow: 0 0 0 1px rgba(80,66,48,.25)"></span>
+            <span style="display: flex; flex-direction: column; gap: 4px">
+              <span style="font-size: 17px; letter-spacing: .25em">素笺</span>
+              <span style="font-size: 12px; letter-spacing: .15em; color: #625c52">无格</span>
+            </span>
+          </label>
+          <label style="display: flex; align-items: center; gap: 14px; padding: 14px 16px; min-height: 44px; border: 1px solid {{zhalanLine}}; background: {{zhalanBg}}; cursor: pointer">
+            <input class="sr" type="radio" name="style" value="zhalan" checked="{{isZhalan}}" onChange="{{pickZhalan}}">
+            <span aria-hidden="true" style="flex: none; width: 36px; height: 46px; background: repeating-linear-gradient(to left, #f6f1e4 0 5px, rgba(60,42,30,.55) 5px 6px), #f6f1e4; box-shadow: 0 0 0 1px rgba(60,42,30,.55)"></span>
+            <span style="display: flex; flex-direction: column; gap: 4px">
+              <span style="font-size: 17px; letter-spacing: .25em">乌丝栏</span>
+              <span style="font-size: 12px; letter-spacing: .15em; color: #625c52">有格</span>
+            </span>
+          </label>
+        </div>
+      </fieldset>
+
+      <div style="display: flex; flex-direction: column; gap: 14px">
+        <button type="button" onClick="{{generate}}" disabled="{{busy}}" style="min-height: 56px; border: none; background: {{btnBg}}; color: #f3eee2; font-size: 18px; letter-spacing: .8em; padding: 0 0 0 .8em">{{btnLabel}}</button>
+        <p aria-live="polite" style="margin: 0; font-size: 13px; letter-spacing: .12em; color: #625c52">{{quotaLabel}}</p>
+      </div>
+    </section>
+
+    <section aria-label="作品" aria-live="polite" style="flex: 1 1 440px; max-width: 560px; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 28px">
+      <div style="width: 100%; max-width: 460px; display: flex; flex-direction: column; align-items: center; transform-origin: 50% 0; animation: scrollSway 9s ease-in-out infinite alternate; animation-play-state: {{play}}">
+        <svg viewBox="0 0 440 54" style="width: 100%; height: 54px; display: block" aria-hidden="true">
+          <path d="M96 54 L220 6 L344 54" fill="none" stroke="#6b5a48" stroke-width="1.2"></path>
+          <circle cx="220" cy="6" r="3.5" fill="#3b2e24"></circle>
+        </svg>
+        <div style="width: 100%; height: 11px; border-radius: 6px; background: linear-gradient(#5f4b3a, #36291f)"></div>
+        <div style="width: calc(100% - 28px); box-sizing: border-box; padding: 58px 20px 34px; background: #cbc1aa; box-shadow: 0 26px 50px rgba(35,33,29,.20), 0 3px 8px rgba(35,33,29,.10)">
+          <div style="padding: 7px; background: #ddd4c0">
+
+            <sc-if value="{{isDone}}" hint-placeholder-val="{{true}}">
+              <div style="display: flex; flex-direction: column; animation: unroll 1.4s ease-out both">
+                <img src="/_blob/89eda01835f13b28f1ed8519c9a3aa2b" alt="生成的小楷作品：周敦颐《爱莲说》" style="width: 100%; aspect-ratio: 1276 / 1600; display: block; box-shadow: 0 0 0 1px rgba(80,66,48,.22)">
+                <sc-if value="{{showStrip}}" hint-placeholder-val="{{true}}">
+                  <div style="display: flex; align-items: center; justify-content: center; min-height: 44px; background: #efe8d8; border-top: 1px dashed rgba(80,66,48,.4); font-size: 12px; letter-spacing: .15em; color: #625c52; text-align: center; padding: 6px 8px">[作品底部签条 · 待原作者授权后确定]</div>
+                </sc-if>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{notDone}}" hint-placeholder-val="{{false}}">
+              <div style="position: relative; width: 100%; aspect-ratio: 1276 / 1600; background: {{paperBg}}; box-shadow: inset 0 0 0 12px #f6f1e4, inset 0 0 0 13px {{paperEdge}}, 0 0 0 1px rgba(80,66,48,.22); display: flex; align-items: center; justify-content: center; overflow: hidden">
+                <sc-if value="{{isLoading}}" hint-placeholder-val="{{false}}">
+                  <div aria-hidden="true" style="position: absolute; width: 46%; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(closest-side, rgba(35,33,29,.38), rgba(35,33,29,.12) 60%, rgba(35,33,29,0)); filter: blur(14px); animation: inkPulse 2.4s ease-in-out infinite, inkMorph 6s ease-in-out infinite alternate"></div>
+                </sc-if>
+                <p style="position: relative; margin: 0; padding: 18px 10px; writing-mode: vertical-rl; font-size: 17px; letter-spacing: .5em; color: {{hintColor}}; background: #f6f1e4">{{paperHint}}</p>
+              </div>
+            </sc-if>
+
+          </div>
+        </div>
+        <div style="width: calc(100% + 24px); height: 16px; border-radius: 8px; background: linear-gradient(90deg, #241b14 0, #241b14 22px, #4a3a2d 22px, #3a2d22 50%, #4a3a2d calc(100% - 22px), #241b14 calc(100% - 22px))"></div>
+      </div>
+
+      <p style="margin: 0; font-size: 14px; letter-spacing: .3em; color: #625c52">周敦颐　爱莲说　{{editionLabel}} · {{styleLabel}}</p>
+
+      <sc-if value="{{isDone}}" hint-placeholder-val="{{true}}">
+        <div style="display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 12px 32px">
+          <a href="/_blob/89eda01835f13b28f1ed8519c9a3aa2b" download="爱莲说_星树书房.jpg" style="text-decoration: none; font-size: 16px; letter-spacing: .5em; padding: 14px 22px 14px 30px; min-height: 44px; box-sizing: border-box; border-top: 1px solid #23211d; border-bottom: 1px solid #23211d">下载作品</a>
+          <a href="Poems.dc.html" style="text-decoration: none; font-size: 15px; letter-spacing: .3em; color: #4f4a43; padding: 12px 0">再写一首</a>
+        </div>
+      </sc-if>
+    </section>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#a8352b","options":["#a8352b","#8c2f28","#b4552d","#23211d"]},"motion":{"editor":"boolean","default":true},"stage":{"editor":"enum","default":"done","options":["ready","loading","done","limit"]},"brandStrip":{"editor":"enum","default":"placeholder","options":["placeholder","none"]},"$preview":{"width":1440,"height":1090}}'>
+class Component extends DCLogic {
+  componentWillUnmount() {
+    clearTimeout(this.timer);
+  }
+  renderVals() {
+    const accent = this.props.accent ?? '#a8352b';
+    const motion = this.props.motion ?? true;
+    const s = this.state || {};
+    const stage = s.stage ?? this.props.stage ?? 'done';
+    const edition = s.edition ?? 'trad';
+    const style = s.style ?? 'clean';
+    // 改参数后旧作品不再对应，回到待生成
+    const pick = (patch) => () => this.setState({ ...patch, stage: stage === 'limit' ? 'limit' : 'ready' });
+    const on = (yes) => ({ line: yes ? '#23211d' : 'rgba(35,33,29,.2)', bg: yes ? 'rgba(35,33,29,.05)' : 'transparent' });
+    const t = on(edition === 'trad'), sp = on(edition === 'simp'), c = on(style === 'clean'), z = on(style === 'zhalan');
+    const zhalan = style === 'zhalan';
+    const hints = { ready: '点生成，作品挂在这里', loading: '正在书写', limit: '额度已用完' };
+    return {
+      accent,
+      play: motion ? 'running' : 'paused',
+      isTrad: edition === 'trad', isSimp: edition === 'simp', isClean: !zhalan, isZhalan: zhalan,
+      tradLine: t.line, tradBg: t.bg, simpLine: sp.line, simpBg: sp.bg,
+      cleanLine: c.line, cleanBg: c.bg, zhalanLine: z.line, zhalanBg: z.bg,
+      pickTrad: pick({ edition: 'trad' }), pickSimp: pick({ edition: 'simp' }),
+      pickClean: pick({ style: 'clean' }), pickZhalan: pick({ style: 'zhalan' }),
+      editionLabel: edition === 'trad' ? '繁体' : '简体',
+      styleLabel: zhalan ? '乌丝栏' : '素笺',
+      isDone: stage === 'done', notDone: stage !== 'done', isLoading: stage === 'loading',
+      showStrip: (this.props.brandStrip ?? 'placeholder') === 'placeholder',
+      paperBg: zhalan ? 'repeating-linear-gradient(to left, #f6f1e4 0 calc(10% - 1px), rgba(60,42,30,.45) calc(10% - 1px) 10%), #f6f1e4' : '#f6f1e4',
+      paperEdge: zhalan ? 'rgba(60,42,30,.45)' : 'rgba(80,66,48,.18)',
+      paperHint: hints[stage] || '',
+      hintColor: stage === 'limit' ? accent : '#625c52',
+      busy: stage === 'loading' || stage === 'limit',
+      btnBg: stage === 'loading' || stage === 'limit' ? '#8a8379' : '#23211d',
+      btnLabel: stage === 'loading' ? '书写中' : stage === 'done' ? '重写' : '生成',
+      quotaLabel: stage === 'limit' ? '[本小时 / 今日] 额度已用完，[整点后] 再来' : '[本小时 / 今日] 还可生成 [8] 幅',
+      generate: () => {
+        this.setState({ stage: 'loading' });
+        clearTimeout(this.timer);
+        this.timer = setTimeout(() => this.setState({ stage: 'done' }), 2600);
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>
