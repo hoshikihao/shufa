@@ -21,6 +21,8 @@ a{color:#23211d}a:hover{color:#a8352b}
 @keyframes mountainPan{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 @keyframes mistBreath{0%,100%{opacity:.55}50%{opacity:.9}}
 @keyframes riseIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes curlUp{0%{opacity:0}8%{opacity:1}90%{opacity:1}100%{opacity:0}}
+@keyframes curlDown{0%{opacity:0}8%{opacity:1}90%{opacity:1}100%{opacity:0}}
 @keyframes fallIn{from{opacity:0;transform:translateY(-18px)}to{opacity:1;transform:translateY(0)}}
 @media (prefers-reduced-motion: reduce){*{animation:none !important;transition:none !important}}
 </style>
@@ -85,18 +87,18 @@ a{color:#23211d}a:hover{color:#a8352b}
 
       <figure id="works" style="margin: 0; flex: 0 1 420px; min-width: 300px; display: flex; flex-direction: column; align-items: center; gap: 22px; animation: fallIn 2s ease-out .4s both">
         <div style="width: 100%; display: grid">
-          <span aria-hidden="true" style="grid-area: 1 / 1; display: block; height: 84px; padding-bottom: 125.39%; visibility: hidden"></span>
-          <div style="grid-area: 1 / 1; align-self: start; margin: 100px 20px 0; box-sizing: border-box; padding: 22px 22px 28px; background: #e4dccb; border: 3px solid #3b2e24; box-shadow: 0 6px 14px rgba(35,33,29,.14), inset 0 0 0 1px rgba(80,66,48,.18)">
+          <span aria-hidden="true" style="grid-area: 1 / 1; display: block; height: 86px; padding-bottom: 125.39%; visibility: hidden"></span>
+          <div style="grid-area: 1 / 1; align-self: stretch; margin: 95px 20px 10px; box-sizing: border-box; padding: 22px; display: flex; flex-direction: column; justify-content: center; background: #e4dccb; border: 3px solid #3b2e24; box-shadow: 0 6px 14px rgba(35,33,29,.14), inset 0 0 0 1px rgba(80,66,48,.18)">
             <img src="/_blob/ab75c63f186ed873d4bccc4c2214e52f" alt="吴冠中 1990 年所作荷花图" style="width: 100%; aspect-ratio: 1002 / 1024; display: block; box-shadow: 0 0 0 1px rgba(80,66,48,.25)">
           </div>
-          <button type="button" onClick="{{toggleScroll}}" aria-pressed="{{rolledPressed}}" aria-label="{{scrollLabel}}" style="grid-area: 1 / 1; align-self: start; position: relative; width: 100%; margin: 0; padding: 0; border: none; background: none; cursor: pointer; display: flex; flex-direction: column; align-items: center; transform-origin: 50% 0; animation: scrollSway 9s ease-in-out infinite alternate; animation-play-state: {{play}}">
+          <button type="button" onClick="{{toggleScroll}}" aria-pressed="{{rolledPressed}}" aria-label="{{scrollLabel}}" style="grid-area: 1 / 1; align-self: start; position: relative; width: 100%; margin: 0; padding: 0; border: none; background: none; cursor: pointer; display: block; transform-origin: 50% 0; animation: scrollSway 9s ease-in-out infinite alternate; animation-play-state: {{play}}">
             <svg viewBox="0 0 440 54" style="width: 100%; height: 54px; display: block" aria-hidden="true">
               <path d="M96 54 L220 6 L344 54" fill="none" stroke="#6b5a48" stroke-width="1.2"></path>
               <circle cx="220" cy="6" r="3.5" fill="#3b2e24"></circle>
             </svg>
             <span style="display: block; width: 100%; height: 11px; border-radius: 6px; background: linear-gradient(#5f4b3a, #36291f)"></span>
-            <span style="display: grid; width: calc(100% - 28px); grid-template-rows: {{paperRows}}; transition: grid-template-rows 1.6s cubic-bezier(.65,0,.35,1); box-shadow: 0 26px 50px rgba(35,33,29,.20), 0 3px 8px rgba(35,33,29,.10)">
-              <span style="display: block; min-height: 0; overflow: hidden">
+            <span style="display: grid; width: calc(100% - 28px); margin: 0 auto; overflow: hidden; grid-template-rows: {{paperRows}}; transition: grid-template-rows 2.8s cubic-bezier(.4,.1,.6,.9); box-shadow: 0 26px 50px rgba(35,33,29,.20), 0 3px 8px rgba(35,33,29,.10)">
+              <span style="display: block; min-height: 0">
                 <span style="display: block; box-sizing: border-box; padding: 58px 20px 34px; background: #cbc1aa">
                   <span style="display: block; padding: 7px; background: #ddd4c0">
                     <img src="/_blob/89eda01835f13b28f1ed8519c9a3aa2b" alt="小楷作品样张：周敦颐《爱莲说》，繁体，无格素笺" style="width: 100%; aspect-ratio: 1276 / 1600; display: block; box-shadow: 0 0 0 1px rgba(80,66,48,.22)">
@@ -104,12 +106,20 @@ a{color:#23211d}a:hover{color:#a8352b}
                 </span>
               </span>
             </span>
-            <span style="display: block; width: calc(100% + 24px); height: {{rodH}}; transition: height 1.6s cubic-bezier(.65,0,.35,1); border-radius: 13px; background: linear-gradient(90deg, #241b14 0, #241b14 22px, #4a3a2d 22px, #3a2d22 50%, #4a3a2d calc(100% - 22px), #241b14 calc(100% - 22px)); box-shadow: 0 6px 12px rgba(35,33,29,.18)"></span>
+            <span style="position: relative; display: block; width: calc(100% + 24px); margin-left: -12px; height: {{rodH}}; transition: height 2.8s cubic-bezier(.4,.1,.6,.9); border-radius: 8px; background: linear-gradient(90deg, #241b14 0, #3a2d22 22px, rgba(0,0,0,0) 22px, rgba(0,0,0,0) calc(100% - 22px), #3a2d22 calc(100% - 22px), #241b14 100%), linear-gradient(#e6dcc6, #cbc1aa 38%, #a59a82 78%, #8a7f6a); box-shadow: 0 6px 12px rgba(35,33,29,.18)">
+              <span style="position: absolute; left: 26px; right: 26px; bottom: 100%; height: 44px; background: linear-gradient(rgba(35,33,29,0), rgba(35,33,29,.08) 45%, rgba(35,33,29,.30) 88%, rgba(250,244,230,.45)); opacity: 0; animation: {{curlAnim}} 2.8s cubic-bezier(.4,.1,.6,.9) both"></span>
+            </span>
           </button>
         </div>
-        <figcaption style="display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center">
-          <span style="font-size: 14px; letter-spacing: .3em; color: #625c52">{{caption}}</span>
-          <span style="font-size: 12px; letter-spacing: .25em; color: #625c52">{{hint}}</span>
+        <figcaption style="display: grid; text-align: center">
+          <span aria-hidden="{{capOpenHidden}}" style="grid-area: 1 / 1; display: flex; flex-direction: column; align-items: center; gap: 8px; opacity: {{capOpenOpacity}}; transition: opacity .5s ease {{capOpenDelay}}">
+            <span style="font-size: 14px; letter-spacing: .3em; color: #625c52">周敦颐　爱莲说　繁体 · 素笺</span>
+            <span style="font-size: 12px; letter-spacing: .25em; color: #625c52">轻点挂轴，卷起看画</span>
+          </span>
+          <span aria-hidden="{{capRolledHidden}}" style="grid-area: 1 / 1; display: flex; flex-direction: column; align-items: center; gap: 8px; opacity: {{capRolledOpacity}}; transition: opacity .5s ease {{capRolledDelay}}">
+            <span style="font-size: 14px; letter-spacing: .3em; color: #625c52">吴冠中　荷花　1990</span>
+            <span style="font-size: 12px; letter-spacing: .25em; color: #625c52">再点一下，放下挂轴</span>
+          </span>
         </figcaption>
       </figure>
     </div>
@@ -151,12 +161,19 @@ class Component extends DCLogic {
       accentWash: accent + '55',
       play: motion ? 'running' : 'paused',
       paperRows: rolled ? '0fr' : '1fr',
-      rodH: rolled ? '26px' : '16px',
+      rodH: rolled ? '30px' : '18px',
+      // 卷动时地杆上方的纸面明暗，模拟纸弯进卷筒；首次点击前不播放
+      curlAnim: !(this.state || {}).toggled ? 'none' : rolled ? 'curlUp' : 'curlDown',
       rolledPressed: rolled ? 'true' : 'false',
       scrollLabel: rolled ? '放下《爱莲说》挂轴' : '卷起《爱莲说》挂轴，看后面的荷花图',
-      caption: rolled ? '吴冠中　荷花　1990' : '周敦颐　爱莲说　繁体 · 素笺',
-      hint: rolled ? '再点一下，放下挂轴' : '轻点挂轴，卷起看画',
-      toggleScroll: () => this.setState({ rolled: !rolled }),
+      // 说明文字交叉淡入淡出：旧的随动画开始淡出，新的等卷完再出现
+      capOpenOpacity: rolled ? '0' : '1',
+      capOpenDelay: rolled ? '0s' : '2.4s',
+      capOpenHidden: rolled ? 'true' : 'false',
+      capRolledOpacity: rolled ? '1' : '0',
+      capRolledDelay: rolled ? '2.4s' : '0s',
+      capRolledHidden: rolled ? 'false' : 'true',
+      toggleScroll: () => this.setState({ rolled: !rolled, toggled: true }),
       cats: [
         { name: '唐诗', count: '366' },
         { name: '宋词', count: '282' },
