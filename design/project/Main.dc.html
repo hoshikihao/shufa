@@ -22,7 +22,7 @@ a{color:#23211d}a:hover{color:#a8352b}
 @keyframes mistBreath{0%,100%{opacity:.55}50%{opacity:.9}}
 @keyframes riseIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fallIn{from{opacity:0;transform:translateY(-18px)}to{opacity:1;transform:translateY(0)}}
-@media (prefers-reduced-motion: reduce){*{animation:none !important}}
+@media (prefers-reduced-motion: reduce){*{animation:none !important;transition:none !important}}
 </style>
 </helmet>
 
@@ -84,20 +84,33 @@ a{color:#23211d}a:hover{color:#a8352b}
       </div>
 
       <figure id="works" style="margin: 0; flex: 0 1 420px; min-width: 300px; display: flex; flex-direction: column; align-items: center; gap: 22px; animation: fallIn 2s ease-out .4s both">
-        <div style="width: 100%; display: flex; flex-direction: column; align-items: center; transform-origin: 50% 0; animation: scrollSway 9s ease-in-out infinite alternate; animation-play-state: {{play}}">
-          <svg viewBox="0 0 440 54" style="width: 100%; height: 54px; display: block" aria-hidden="true">
-            <path d="M96 54 L220 6 L344 54" fill="none" stroke="#6b5a48" stroke-width="1.2"></path>
-            <circle cx="220" cy="6" r="3.5" fill="#3b2e24"></circle>
-          </svg>
-          <div style="width: 100%; height: 11px; border-radius: 6px; background: linear-gradient(#5f4b3a, #36291f)"></div>
-          <div style="width: calc(100% - 28px); box-sizing: border-box; padding: 58px 20px 34px; background: #cbc1aa; box-shadow: 0 26px 50px rgba(35,33,29,.20), 0 3px 8px rgba(35,33,29,.10)">
-            <div style="padding: 7px; background: #ddd4c0">
-              <img src="/_blob/89eda01835f13b28f1ed8519c9a3aa2b" alt="小楷作品样张：周敦颐《爱莲说》，繁体，无格素笺" style="width: 100%; aspect-ratio: 1276 / 1600; display: block; box-shadow: 0 0 0 1px rgba(80,66,48,.22)">
-            </div>
+        <div style="width: 100%; display: grid">
+          <span aria-hidden="true" style="grid-area: 1 / 1; display: block; height: 84px; padding-bottom: 125.39%; visibility: hidden"></span>
+          <div style="grid-area: 1 / 1; align-self: start; margin: 100px 20px 0; box-sizing: border-box; padding: 22px 22px 28px; background: #e4dccb; border: 3px solid #3b2e24; box-shadow: 0 6px 14px rgba(35,33,29,.14), inset 0 0 0 1px rgba(80,66,48,.18)">
+            <img src="/_blob/ab75c63f186ed873d4bccc4c2214e52f" alt="吴冠中 1990 年所作荷花图" style="width: 100%; aspect-ratio: 1002 / 1024; display: block; box-shadow: 0 0 0 1px rgba(80,66,48,.25)">
           </div>
-          <div style="width: calc(100% + 24px); height: 16px; border-radius: 8px; background: linear-gradient(90deg, #241b14 0, #241b14 22px, #4a3a2d 22px, #3a2d22 50%, #4a3a2d calc(100% - 22px), #241b14 calc(100% - 22px))"></div>
+          <button type="button" onClick="{{toggleScroll}}" aria-pressed="{{rolledPressed}}" aria-label="{{scrollLabel}}" style="grid-area: 1 / 1; align-self: start; position: relative; width: 100%; margin: 0; padding: 0; border: none; background: none; cursor: pointer; display: flex; flex-direction: column; align-items: center; transform-origin: 50% 0; animation: scrollSway 9s ease-in-out infinite alternate; animation-play-state: {{play}}">
+            <svg viewBox="0 0 440 54" style="width: 100%; height: 54px; display: block" aria-hidden="true">
+              <path d="M96 54 L220 6 L344 54" fill="none" stroke="#6b5a48" stroke-width="1.2"></path>
+              <circle cx="220" cy="6" r="3.5" fill="#3b2e24"></circle>
+            </svg>
+            <span style="display: block; width: 100%; height: 11px; border-radius: 6px; background: linear-gradient(#5f4b3a, #36291f)"></span>
+            <span style="display: grid; width: calc(100% - 28px); grid-template-rows: {{paperRows}}; transition: grid-template-rows 1.6s cubic-bezier(.65,0,.35,1); box-shadow: 0 26px 50px rgba(35,33,29,.20), 0 3px 8px rgba(35,33,29,.10)">
+              <span style="display: block; min-height: 0; overflow: hidden">
+                <span style="display: block; box-sizing: border-box; padding: 58px 20px 34px; background: #cbc1aa">
+                  <span style="display: block; padding: 7px; background: #ddd4c0">
+                    <img src="/_blob/89eda01835f13b28f1ed8519c9a3aa2b" alt="小楷作品样张：周敦颐《爱莲说》，繁体，无格素笺" style="width: 100%; aspect-ratio: 1276 / 1600; display: block; box-shadow: 0 0 0 1px rgba(80,66,48,.22)">
+                  </span>
+                </span>
+              </span>
+            </span>
+            <span style="display: block; width: calc(100% + 24px); height: {{rodH}}; transition: height 1.6s cubic-bezier(.65,0,.35,1); border-radius: 13px; background: linear-gradient(90deg, #241b14 0, #241b14 22px, #4a3a2d 22px, #3a2d22 50%, #4a3a2d calc(100% - 22px), #241b14 calc(100% - 22px)); box-shadow: 0 6px 12px rgba(35,33,29,.18)"></span>
+          </button>
         </div>
-        <figcaption style="font-size: 14px; letter-spacing: .3em; color: #625c52">周敦颐　爱莲说　繁体 · 素笺</figcaption>
+        <figcaption style="display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center">
+          <span style="font-size: 14px; letter-spacing: .3em; color: #625c52">{{caption}}</span>
+          <span style="font-size: 12px; letter-spacing: .25em; color: #625c52">{{hint}}</span>
+        </figcaption>
       </figure>
     </div>
   </section>
@@ -126,15 +139,24 @@ a{color:#23211d}a:hover{color:#a8352b}
   </footer>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#a8352b","options":["#a8352b","#8c2f28","#b4552d","#23211d"]},"motion":{"editor":"boolean","default":true},"$preview":{"width":1440,"height":1600}}'>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#a8352b","options":["#a8352b","#8c2f28","#b4552d","#23211d"]},"motion":{"editor":"boolean","default":true},"scrollRolled":{"editor":"boolean","default":false},"$preview":{"width":1440,"height":1600}}'>
 class Component extends DCLogic {
   renderVals() {
     const accent = this.props.accent ?? '#a8352b';
     const motion = this.props.motion ?? true;
+    // 挂轴卷起后露出后面的荷花图；点击切换，Tweaks 里可设初始状态
+    const rolled = (this.state || {}).rolled ?? this.props.scrollRolled ?? false;
     return {
       accent,
       accentWash: accent + '55',
       play: motion ? 'running' : 'paused',
+      paperRows: rolled ? '0fr' : '1fr',
+      rodH: rolled ? '26px' : '16px',
+      rolledPressed: rolled ? 'true' : 'false',
+      scrollLabel: rolled ? '放下《爱莲说》挂轴' : '卷起《爱莲说》挂轴，看后面的荷花图',
+      caption: rolled ? '吴冠中　荷花　1990' : '周敦颐　爱莲说　繁体 · 素笺',
+      hint: rolled ? '再点一下，放下挂轴' : '轻点挂轴，卷起看画',
+      toggleScroll: () => this.setState({ rolled: !rolled }),
       cats: [
         { name: '唐诗', count: '366' },
         { name: '宋词', count: '282' },
