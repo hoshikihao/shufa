@@ -28,7 +28,7 @@ a{color:#23211d}a:hover{color:#a8352b}
 </style>
 </helmet>
 
-<div style="font-family: 'Noto Serif SC', 'Songti SC', serif; background: #f3eee2; color: #23211d; overflow: hidden">
+<div onClick="{{onPageClick}}" style="position: relative; font-family: 'Noto Serif SC', 'Songti SC', serif; background: #f3eee2; color: #23211d; overflow: hidden">
 
   <section style="position: relative; min-height: 860px; box-sizing: border-box; padding: 0 6vw">
 
@@ -89,7 +89,7 @@ a{color:#23211d}a:hover{color:#a8352b}
         <div style="width: 100%; display: grid">
           <span aria-hidden="true" style="grid-area: 1 / 1; display: block; height: 86px; padding-bottom: 125.39%; visibility: hidden"></span>
           <div style="grid-area: 1 / 1; align-self: stretch; margin: 95px 20px 10px; box-sizing: border-box; padding: 22px; display: flex; flex-direction: column; justify-content: center; background: #e4dccb; border: 3px solid #3b2e24; box-shadow: 0 6px 14px rgba(35,33,29,.14), inset 0 0 0 1px rgba(80,66,48,.18)">
-            <img src="/_blob/ab75c63f186ed873d4bccc4c2214e52f" alt="吴冠中 1990 年所作荷花图" style="width: 100%; aspect-ratio: 1002 / 1024; display: block; box-shadow: 0 0 0 1px rgba(80,66,48,.25)">
+            <img ref="{{lotusRef}}" src="/_blob/ab75c63f186ed873d4bccc4c2214e52f" alt="吴冠中 1990 年所作荷花图" style="width: 100%; aspect-ratio: 1002 / 1024; display: block; box-shadow: 0 0 0 1px rgba(80,66,48,.25)">
           </div>
           <button type="button" onClick="{{toggleScroll}}" aria-pressed="{{rolledPressed}}" aria-label="{{scrollLabel}}" style="grid-area: 1 / 1; align-self: start; position: relative; width: 100%; margin: 0; padding: 0; border: none; background: none; cursor: pointer; display: block; transform-origin: 50% 0; animation: scrollSway 9s ease-in-out infinite alternate; animation-play-state: {{play}}">
             <svg viewBox="0 0 440 54" style="width: 100%; height: 54px; display: block" aria-hidden="true">
@@ -97,7 +97,7 @@ a{color:#23211d}a:hover{color:#a8352b}
               <circle cx="220" cy="6" r="3.5" fill="#3b2e24"></circle>
             </svg>
             <span style="display: block; width: 100%; height: 11px; border-radius: 6px; background: linear-gradient(#5f4b3a, #36291f)"></span>
-            <span style="display: grid; width: calc(100% - 28px); margin: 0 auto; overflow: hidden; grid-template-rows: {{paperRows}}; transition: grid-template-rows 2.8s cubic-bezier(.4,.1,.6,.9); box-shadow: 0 26px 50px rgba(35,33,29,.20), 0 3px 8px rgba(35,33,29,.10)">
+            <span style="display: grid; width: calc(100% - 28px); margin: 0 auto; overflow: hidden; grid-template-rows: {{paperRows}}; transition: grid-template-rows 2.8s cubic-bezier(.4,.1,.6,.9); transition-delay: {{rollDelay}}; box-shadow: 0 26px 50px rgba(35,33,29,.20), 0 3px 8px rgba(35,33,29,.10)">
               <span style="display: block; min-height: 0">
                 <span style="display: block; box-sizing: border-box; padding: 58px 20px 34px; background: #cbc1aa">
                   <span style="display: block; padding: 7px; background: #ddd4c0">
@@ -106,8 +106,8 @@ a{color:#23211d}a:hover{color:#a8352b}
                 </span>
               </span>
             </span>
-            <span style="position: relative; display: block; width: calc(100% + 24px); margin-left: -12px; height: {{rodH}}; transition: height 2.8s cubic-bezier(.4,.1,.6,.9); border-radius: 8px; background: linear-gradient(90deg, #241b14 0, #3a2d22 22px, rgba(0,0,0,0) 22px, rgba(0,0,0,0) calc(100% - 22px), #3a2d22 calc(100% - 22px), #241b14 100%), linear-gradient(#e6dcc6, #cbc1aa 38%, #a59a82 78%, #8a7f6a); box-shadow: 0 6px 12px rgba(35,33,29,.18)">
-              <span style="position: absolute; left: 26px; right: 26px; bottom: 100%; height: 44px; background: linear-gradient(rgba(35,33,29,0), rgba(35,33,29,.08) 45%, rgba(35,33,29,.30) 88%, rgba(250,244,230,.45)); opacity: 0; animation: {{curlAnim}} 2.8s cubic-bezier(.4,.1,.6,.9) both"></span>
+            <span style="position: relative; display: block; width: calc(100% + 24px); margin-left: -12px; height: {{rodH}}; transition: height 2.8s cubic-bezier(.4,.1,.6,.9); transition-delay: {{rollDelay}}; border-radius: 8px; background: linear-gradient(90deg, #241b14 0, #3a2d22 22px, rgba(0,0,0,0) 22px, rgba(0,0,0,0) calc(100% - 22px), #3a2d22 calc(100% - 22px), #241b14 100%), linear-gradient(#e6dcc6, #cbc1aa 38%, #a59a82 78%, #8a7f6a); box-shadow: 0 6px 12px rgba(35,33,29,.18)">
+              <span style="position: absolute; left: 26px; right: 26px; bottom: 100%; height: 44px; background: linear-gradient(rgba(35,33,29,0), rgba(35,33,29,.08) 45%, rgba(35,33,29,.30) 88%, rgba(250,244,230,.45)); opacity: 0; animation: {{curlAnim}} 2.8s cubic-bezier(.4,.1,.6,.9) both; animation-delay: {{rollDelay}}"></span>
             </span>
           </button>
         </div>
@@ -147,20 +147,334 @@ a{color:#23211d}a:hover{color:#a8352b}
     <span>星树书房 · 个人非商业项目</span>
     <span>书法渲染：[待原作者授权后确认署名]</span>
   </footer>
+
+  <canvas ref="{{canvasRef}}" aria-hidden="true" style="position: absolute; left: 0; top: 0; width: 100%; height: 100%; pointer-events: none; z-index: 4"></canvas>
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#a8352b","options":["#a8352b","#8c2f28","#b4552d","#23211d"]},"motion":{"editor":"boolean","default":true},"scrollRolled":{"editor":"boolean","default":false},"$preview":{"width":1440,"height":1600}}'>
 class Component extends DCLogic {
+  componentDidMount() {
+    this.pond = { shrimp: [], last: 0, wasRolled: null };
+    this.loop = (now) => { this.tickPond(now); this.raf = requestAnimationFrame(this.loop); };
+    this.raf = requestAnimationFrame(this.loop);
+  }
+  componentWillUnmount() {
+    cancelAnimationFrame(this.raf);
+  }
+
+  // 墨虾：挂轴卷起后从荷花图里游出，在首页随处游动；点击时尾扇连弹向后逃开；挂轴放下时游回画里消失
+  makeShrimp() {
+    return { x: 0, y: 0, vx: 0, vy: 0, ang: 0, prevAng: 0, turnRate: 0, L: 80 + Math.random() * 30,
+      mode: 'hidden', t: 0, alpha: 0, scale: 0.35, curl: 0, kick: 0, phase: Math.random() * 10,
+      wanderAng: 0, thrustIn: 0, flips: 0, flipIn: 0, power: 0, aim: 0, delay: 0, tx: 0, ty: 0 };
+  }
+
+  tickPond(now) {
+    const canvas = this.canvasEl, root = canvas && canvas.parentElement, img = this.lotusEl, p = this.pond;
+    if (!canvas || !root || !p) return;
+    const dt = p.last ? Math.min(0.05, (now - p.last) / 1000) : 0;
+    p.last = now;
+    const rr = root.getBoundingClientRect(), W = rr.width, H = rr.height, dpr = window.devicePixelRatio || 1;
+    if (canvas.width !== Math.round(W * dpr) || canvas.height !== Math.round(H * dpr)) {
+      canvas.width = Math.round(W * dpr);
+      canvas.height = Math.round(H * dpr);
+    }
+    const ctx = canvas.getContext('2d');
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, W, H);
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!this.motionOn || reduce || !img) return;
+    const ir = img.getBoundingClientRect();
+    const box = { x: ir.left - rr.left, y: ir.top - rr.top, w: ir.width, h: ir.height };
+    if (!p.shrimp.length) p.shrimp = Array.from({ length: 8 }, () => this.makeShrimp());
+    if (this.rolledNow !== p.wasRolled) {
+      if (this.rolledNow) {
+        // 等挂轴卷完再出画；页面初始就是卷起状态时立即出画
+        const wait = p.wasRolled === null ? 0.3 : 2.5;
+        p.shrimp.forEach((s, i) => {
+          if (s.mode === 'return' || s.mode === 'vanish') { s.mode = 'wander'; s.alpha = 1; s.scale = 1; s.wanderAng = s.ang; return; }
+          if (s.mode === 'hidden') { s.mode = 'waiting'; s.delay = wait + i * 0.2 + Math.random() * 0.4; }
+        });
+      } else if (p.wasRolled) {
+        p.shrimp.forEach((s) => {
+          if (s.mode === 'waiting' || s.mode === 'hidden') { s.mode = 'hidden'; return; }
+          s.mode = 'return';
+          s.tx = box.x + box.w * (0.2 + 0.6 * Math.random());
+          s.ty = box.y + box.h * (0.3 + 0.5 * Math.random());
+        });
+      }
+      p.wasRolled = this.rolledNow;
+    }
+    for (const s of p.shrimp) this.stepShrimp(s, dt, box, W, H);
+    for (const s of p.shrimp) if (s.alpha > 0.01) this.drawShrimp(ctx, s, now / 1000);
+  }
+
+  stepShrimp(s, dt, box, W, H) {
+    const TAU = Math.PI * 2;
+    const turnTo = (a, b) => { let d = (b - a) % TAU; if (d > Math.PI) d -= TAU; if (d < -Math.PI) d += TAU; return d; };
+    const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+    s.t += dt;
+    if (s.mode === 'hidden') { s.alpha = 0; return; }
+    if (s.mode === 'waiting') {
+      s.delay -= dt;
+      if (s.delay > 0) return;
+      s.mode = 'emerge';
+      s.t = 0;
+      s.x = box.x + box.w * (0.15 + 0.7 * Math.random());
+      s.y = box.y + box.h * (0.15 + 0.7 * Math.random());
+      s.ang = s.prevAng = Math.atan2(s.y - (box.y + box.h / 2), s.x - (box.x + box.w / 2)) + (Math.random() - 0.5) * 0.8;
+      s.vx = Math.cos(s.ang) * 40;
+      s.vy = Math.sin(s.ang) * 40;
+    }
+    let drag = 1.4;
+    if (s.mode === 'emerge') {
+      // 由淡变浓、由小变大，像从画面里浮出来，同时朝画外游
+      const k = Math.min(1, s.t / 1.2);
+      s.alpha = k;
+      s.scale = 0.35 + 0.65 * k;
+      s.vx += Math.cos(s.ang) * 150 * dt;
+      s.vy += Math.sin(s.ang) * 150 * dt;
+      drag = 0.9;
+      if (k >= 1) { s.mode = 'wander'; s.wanderAng = s.ang; s.thrustIn = 0.4; }
+    } else if (s.mode === 'wander') {
+      // 平时一下一下划水前进，偶尔停住；靠近页面边缘就掉头
+      s.wanderAng += (Math.random() - 0.5) * 3 * dt;
+      let want = s.wanderAng;
+      const m = 90;
+      if (s.x < m || s.x > W - m || s.y < m || s.y > H - m) {
+        want = Math.atan2(H / 2 - s.y, W / 2 - s.x);
+        s.wanderAng += turnTo(s.wanderAng, want) * 2 * dt;
+      }
+      s.ang += clamp(turnTo(s.ang, want), -1.6 * dt, 1.6 * dt);
+      s.thrustIn -= dt;
+      if (s.thrustIn <= 0) {
+        if (Math.random() < 0.25) {
+          s.thrustIn = 1.5 + Math.random() * 2.5;
+        } else {
+          const push = 45 + Math.random() * 60;
+          s.vx += Math.cos(s.ang) * push;
+          s.vy += Math.sin(s.ang) * push;
+          s.kick = 1;
+          s.thrustIn = 0.5 + Math.random() * 1.2;
+        }
+      }
+    } else if (s.mode === 'flee') {
+      // 头先转向惊扰处，尾扇猛收，整只虾向后弹出，连弹几下，一下比一下弱
+      drag = 3.2;
+      if (s.aim > 0) { s.aim -= dt; s.ang += clamp(turnTo(s.ang, s.threatAng), -20 * dt, 20 * dt); }
+      s.flipIn -= dt;
+      if (s.flips > 0 && s.flipIn <= 0) {
+        s.vx -= Math.cos(s.ang) * s.power;
+        s.vy -= Math.sin(s.ang) * s.power;
+        s.curl = 1;
+        s.power *= 0.6;
+        s.flips -= 1;
+        s.flipIn = 0.17 + Math.random() * 0.06;
+      }
+      if (s.flips === 0 && s.flipIn < -0.7) { s.mode = 'wander'; s.wanderAng = s.ang; s.thrustIn = 0.8 + Math.random(); }
+    } else if (s.mode === 'return') {
+      // 主动游回画里：头朝目标，越远游得越快
+      const dist = Math.hypot(s.tx - s.x, s.ty - s.y);
+      s.ang += clamp(turnTo(s.ang, Math.atan2(s.ty - s.y, s.tx - s.x)), -8 * dt, 8 * dt);
+      const sp = clamp(dist / 0.7, 420, 1500);
+      s.vx += (Math.cos(s.ang) * sp - s.vx) * Math.min(1, 6 * dt);
+      s.vy += (Math.sin(s.ang) * sp - s.vy) * Math.min(1, 6 * dt);
+      s.kick = 1;
+      drag = 0;
+      if (dist < 40) { s.mode = 'vanish'; s.t = 0; }
+    } else if (s.mode === 'vanish') {
+      const k = Math.min(1, s.t / 0.45);
+      s.alpha = 1 - k;
+      s.scale = 1 - 0.6 * k;
+      drag = 4;
+      if (k >= 1) s.mode = 'hidden';
+    }
+    const f = Math.exp(-drag * dt);
+    s.vx *= f;
+    s.vy *= f;
+    s.x += s.vx * dt;
+    s.y += s.vy * dt;
+    if (s.mode === 'flee' || s.mode === 'wander') {
+      if (s.x < 10 || s.x > W - 10) { s.x = clamp(s.x, 10, W - 10); s.vx *= -0.3; }
+      if (s.y < 10 || s.y > H - 10) { s.y = clamp(s.y, 10, H - 10); s.vy *= -0.3; }
+    }
+    s.curl = Math.max(0, s.curl - dt * 5);
+    s.kick = Math.max(0, s.kick - dt * 2);
+    if (dt > 0) s.turnRate += (turnTo(s.prevAng, s.ang) / dt - s.turnRate) * Math.min(1, 8 * dt);
+    s.prevAng = s.ang;
+  }
+
+  startle(clientX, clientY) {
+    const p = this.pond, root = this.canvasEl && this.canvasEl.parentElement;
+    if (!p || !root) return;
+    const rr = root.getBoundingClientRect(), cx = clientX - rr.left, cy = clientY - rr.top;
+    for (const s of p.shrimp) {
+      if (s.mode !== 'wander' && s.mode !== 'flee' && s.mode !== 'emerge') continue;
+      const d = Math.hypot(s.x - cx, s.y - cy);
+      if (d > 260) continue;
+      s.mode = 'flee';
+      s.alpha = 1;
+      s.scale = 1;
+      s.threatAng = Math.atan2(cy - s.y, cx - s.x);
+      s.aim = 0.08;
+      s.flips = d < 140 ? 3 : 2;
+      s.power = 300 + 650 * (1 - d / 260);
+      s.flipIn = 0.06 + Math.random() * 0.05;
+    }
+  }
+
+  // 齐白石笔意：头胸淡墨中一笔浓墨，腹节淡墨叠染，长须向后拖开，细长大钳
+  drawShrimp(ctx, s, t) {
+    const L = s.L, ink = (a) => 'rgba(35,33,29,' + a + ')';
+    const fwd = s.vx * Math.cos(s.ang) + s.vy * Math.sin(s.ang);
+    const stream = Math.max(0, Math.min(1, -fwd / 320));
+    ctx.save();
+    ctx.translate(s.x, s.y);
+    ctx.rotate(s.ang);
+    ctx.scale(s.scale, s.scale);
+    ctx.globalAlpha = s.alpha;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    for (const side of [-1, 1]) {
+      // 长须：平时在身后拖开，向后弹逃时被水流甩到前方
+      const sway = Math.sin(t * 1.3 + s.phase + side * 0.7) * 0.12 * L;
+      const ex = L * (-2.4 + 4.6 * stream), ey = side * L * (0.42 - 0.2 * stream) + sway;
+      ctx.strokeStyle = ink(0.6);
+      ctx.lineWidth = 0.8;
+      ctx.beginPath();
+      ctx.moveTo(L * 0.36, side * L * 0.03);
+      ctx.bezierCurveTo(L * 0.58, side * L * 0.14, L * (-0.5 + 1.6 * stream), side * L * 0.5 + sway * 0.4, ex, ey);
+      ctx.stroke();
+      ctx.lineWidth = 0.7;
+      ctx.beginPath();
+      ctx.moveTo(L * 0.38, side * L * 0.02);
+      ctx.quadraticCurveTo(L * 0.58, side * L * 0.05, L * 0.7, side * L * 0.12 + sway * 0.1);
+      ctx.stroke();
+      // 大钳：细长三节，末端开叉；蜷身时收拢
+      const reach = 1 - 0.4 * s.curl;
+      const ax = L * (0.12 + 0.36 * reach), bx = L * (0.12 + 0.72 * reach), cx = L * (0.12 + 1.0 * reach);
+      ctx.strokeStyle = ink(0.8);
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.moveTo(L * 0.24, side * L * 0.05);
+      ctx.lineTo(ax, side * L * 0.16);
+      ctx.lineTo(bx, side * L * 0.2);
+      ctx.lineTo(cx, side * L * 0.15);
+      ctx.stroke();
+      ctx.lineWidth = 1.6;
+      ctx.beginPath();
+      ctx.moveTo(cx, side * L * 0.15);
+      ctx.lineTo(cx + L * 0.1, side * L * 0.12);
+      ctx.moveTo(cx, side * L * 0.15);
+      ctx.lineTo(cx + L * 0.09, side * L * 0.17);
+      ctx.stroke();
+      // 步足：三对淡墨短笔，划水时摆动
+      ctx.strokeStyle = ink(0.35);
+      ctx.lineWidth = 0.8;
+      for (let k = 0; k < 3; k++) {
+        const lx = L * (0.2 - k * 0.07), w = Math.sin(t * 9 + k + s.phase) * 0.03 * L * (0.3 + s.kick);
+        ctx.beginPath();
+        ctx.moveTo(lx, side * L * 0.07);
+        ctx.lineTo(lx - L * 0.07 + w, side * L * 0.16);
+        ctx.stroke();
+      }
+    }
+    // 腹节：转弯时尾部跟着弯，弹逃时蜷到身下（俯视看是缩短）
+    let x = 0, y = 0, dir = Math.PI;
+    const bend = Math.max(-0.5, Math.min(0.5, -s.turnRate * 0.12));
+    for (let i = 0; i < 6; i++) {
+      const seg = L * 0.1 * (1 - i * 0.05) * (1 - 0.55 * s.curl);
+      dir += bend * 0.35 + Math.sin(t * 2.2 + s.phase - i * 0.6) * 0.03;
+      x += Math.cos(dir) * seg;
+      y += Math.sin(dir) * seg;
+      const r = L * 0.105 * (1 - i * 0.12);
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(dir);
+      const g = ctx.createRadialGradient(0, 0, r * 0.15, 0, 0, r * 1.1);
+      g.addColorStop(0, ink(0.22));
+      g.addColorStop(0.65, ink(0.42 + 0.15 * s.curl));
+      g.addColorStop(1, ink(0.02));
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.ellipse(0, 0, seg * 0.8 + r * 0.25, r, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = ink(0.5);
+      ctx.lineWidth = 1.3;
+      ctx.beginPath();
+      ctx.moveTo(-seg * 0.15, -r * 0.85);
+      ctx.quadraticCurveTo(seg * 0.3, 0, -seg * 0.15, r * 0.85);
+      ctx.stroke();
+      ctx.restore();
+    }
+    // 尾扇
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(dir);
+    ctx.strokeStyle = ink(0.55);
+    ctx.lineWidth = 2.6;
+    for (const a of [-0.5, -0.17, 0.17, 0.5]) {
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.lineTo(Math.cos(a) * L * 0.12, Math.sin(a) * L * 0.12);
+      ctx.stroke();
+    }
+    ctx.restore();
+    // 头胸甲：淡墨晕开，中央一笔浓墨；额剑与双眼
+    const g2 = ctx.createRadialGradient(L * 0.16, 0, 1, L * 0.16, 0, L * 0.24);
+    g2.addColorStop(0, ink(0.45));
+    g2.addColorStop(0.7, ink(0.36));
+    g2.addColorStop(1, ink(0.02));
+    ctx.fillStyle = g2;
+    ctx.beginPath();
+    ctx.ellipse(L * 0.16, 0, L * 0.22, L * 0.12, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = ink(0.92);
+    ctx.beginPath();
+    ctx.moveTo(L * 0.02, 0);
+    ctx.quadraticCurveTo(L * 0.12, -L * 0.045, L * 0.24, -L * 0.01);
+    ctx.quadraticCurveTo(L * 0.14, L * 0.04, L * 0.02, 0);
+    ctx.fill();
+    ctx.strokeStyle = ink(0.85);
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    ctx.moveTo(L * 0.3, 0);
+    ctx.lineTo(L * 0.46, -L * 0.01);
+    ctx.stroke();
+    ctx.fillStyle = ink(0.95);
+    for (const side of [-1, 1]) {
+      ctx.beginPath();
+      ctx.arc(L * 0.34, side * L * 0.055, 2.2, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
   renderVals() {
     const accent = this.props.accent ?? '#a8352b';
     const motion = this.props.motion ?? true;
     // 挂轴卷起后露出后面的荷花图；点击切换，Tweaks 里可设初始状态
     const rolled = (this.state || {}).rolled ?? this.props.scrollRolled ?? false;
+    // 放下挂轴时若有墨虾在外，先让虾游回画里，挂轴稍后再放下
+    const wait = !rolled && (this.state || {}).shrimpOut ? 0.9 : 0;
+    this.motionOn = motion;
+    this.rolledNow = rolled;
+    if (!this.hooks) {
+      this.hooks = {
+        canvas: (el) => { this.canvasEl = el; },
+        lotus: (el) => { this.lotusEl = el; },
+        click: (e) => this.startle(e.clientX, e.clientY)
+      };
+    }
     return {
       accent,
       accentWash: accent + '55',
       play: motion ? 'running' : 'paused',
+      canvasRef: this.hooks.canvas,
+      lotusRef: this.hooks.lotus,
+      onPageClick: this.hooks.click,
       paperRows: rolled ? '0fr' : '1fr',
+      rollDelay: wait + 's',
       rodH: rolled ? '30px' : '18px',
       // 卷动时地杆上方的纸面明暗，模拟纸弯进卷筒；首次点击前不播放
       curlAnim: !(this.state || {}).toggled ? 'none' : rolled ? 'curlUp' : 'curlDown',
@@ -168,12 +482,13 @@ class Component extends DCLogic {
       scrollLabel: rolled ? '放下《爱莲说》挂轴' : '卷起《爱莲说》挂轴，看后面的荷花图',
       // 说明文字交叉淡入淡出：旧的随动画开始淡出，新的等卷完再出现
       capOpenOpacity: rolled ? '0' : '1',
-      capOpenDelay: rolled ? '0s' : '2.4s',
+      capOpenDelay: rolled ? '0s' : (2.4 + wait) + 's',
       capOpenHidden: rolled ? 'true' : 'false',
       capRolledOpacity: rolled ? '1' : '0',
       capRolledDelay: rolled ? '2.4s' : '0s',
       capRolledHidden: rolled ? 'false' : 'true',
-      toggleScroll: () => this.setState({ rolled: !rolled, toggled: true }),
+      toggleScroll: () => this.setState({ rolled: !rolled, toggled: true,
+        shrimpOut: !!(motion && this.pond && this.pond.shrimp.some((s) => s.mode !== 'hidden' && s.mode !== 'waiting')) }),
       cats: [
         { name: '唐诗', count: '366' },
         { name: '宋词', count: '282' },
