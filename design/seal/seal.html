@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>星樹 印章生成</title>
+<style>
+body{margin:0;padding:24px;background:#e9e3d6;font-family:sans-serif;color:#333}
+canvas{display:block;max-width:100%;height:auto;margin-bottom:16px}
+textarea{display:none}
+</style>
+</head>
+<body>
+<canvas id="preview" width="2400" height="1200"></canvas>
+<textarea id="out-zhuwen"></textarea>
+<textarea id="out-baiwen"></textarea>
+<textarea id="out-preview"></textarea>
+<script>
+// 星樹 篆书印：印文自右向左读，右「星」（《说文》或体：日 + 生），左「樹」（《说文》正篆：木 + 壴 + 寸）
+// 每一笔用坐标写成路径，再按统一笔宽描粗；不使用任何字体
+
+const SIZE = 1200;          // 导出尺寸
+const FACE = 960;           // 印面边长
+const FACE_X = (SIZE - FACE) / 2;
+const CINNABAR = [176, 52, 40];
+
+// 可复现的随机数
+function rng(seed) {
+  return function () {
+    seed |= 0; seed = seed + 0x6D2B79F5 | 0;
+    let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+
+// 值噪声 + 分形叠加，用于刀口毛边和印泥浓淡
+function makeNoise(seed) {
+  const r = rng(seed), N = 256, perm = new Uint8Array(512), val = new Float32Array(N);
+  for (let i = 0; i < N; i++) { perm[i] = i; val[i] = r(); }
+  for (let i = N - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [perm[i], perm[j]] = [perm[j], perm[i]]; }
+  for (let i = 0; i < N; i++) perm[i + N] = perm[i];
+  const s = (t) => t * t * (3 - 2 * t);
+  const v = (x, y) => val[perm[(x & 255) + perm[y & 255]]];
+  function noise(x, y) {
+    const xi = Math.floor(x), yi = Math.floor(y), xf = x - xi, yf = y - yi, u = s(xf), w = s(yf);
+    const a = v(xi, yi), b = v(xi + 1, yi), c = v(xi, yi + 1), d = v(xi + 1, yi + 1);
+    return a + (b - a) * u + (c - a) * w + (a - b - c + d) * u * w;
+  }
+  return function fbm(x, y, oct) {
+    let sum = 0, amp = 1, f = 1, norm = 0;
+    for (let i = 0; i < oct; i++) { sum += noise(x * f, y * f) * amp; norm += amp; amp *= 0.5; f *= 2; }
+    return sum / norm;
+  };
+}
+
+// ---- 字形：坐标单位为印面千分制，每个字在自己的栏内定位 ----
+// 路径命令：M x y / L x y / C c1x c1y c2x c2y x y / Z
+// 「樹」栏宽 530、「星」栏宽 240、栏间 50，高均为 820
+
+const SHU = [
+  // 木：中竖、上部两臂（屮）、下部两根
+  'M72 0 L72 820',
+  'M0 30 L0 150 C0 230 30 270 72 270',
+  'M144 30 L144 150 C144 230 114 270 72 270',
+  'M72 360 C20 360 0 400 0 470 L0 790',
+  'M72 360 C124 360 144 400 144 470 L144 790',
+  // 壴：上部屮（中竖与两臂）、一横、口形鼓身、两足、底横
+  'M275 20 L275 340',
+  'M210 60 L210 170 C210 240 240 270 275 270',
+  'M340 60 L340 170 C340 240 310 270 275 270',
+  'M195 340 L355 340',
+  'M255 420 L295 420 C325 420 340 435 340 460 L340 550 C340 575 325 590 295 590 L255 590 C225 590 210 575 210 550 L210 460 C210 435 225 420 255 420 Z',
+  'M245 590 L245 800',
+  'M305 590 L305 800',
+  'M190 800 L360 800',
+  // 寸：又形弯钩（穿过长竖，尾向左收）、斜笔、长竖、寸口短横
+  'M410 70 C490 90 515 190 500 280 C488 350 450 385 395 395',
+  'M405 190 L465 300',
+  'M465 300 C470 500 478 700 485 815',
+  'M400 560 L468 560'
+];
+
+const XING = [
+  // 日：杯形外框、中横
+  'M0 0 L240 0 L240 170 C240 230 200 260 120 260 C40 260 0 230 0 170 Z',
+  'M0 95 L240 95',
+  // 生：中竖、两臂（屮）、中横、底横
+  'M120 260 L120 820',
+  'M0 330 C0 450 40 510 120 510',
+  'M240 330 C240 450 200 510 120 510',
+  'M15 660 L225 660',
+  'M0 820 L240 820'
+];
+
+// 栏位：内容区 x 100–900（千分制），右「星」左「樹」
+const CONTENT = { x: 100, y: 95, w: 800, h: 810 };
+const LAYOUT = [
+  { strokes: SHU, x: 0, w: 530 },
+  { strokes: XING, x: 580, w: 240 }
+];
+
+function parse(d) {
+  const t = d.match(/[MLCZ]|-?\d+(\.\d+)?/g), cmds = [];
+  for (let i = 0; i < t.length;) {
+    const c = t[i++];
+    const n = c === 'C' ? 6 : c === 'Z' ? 0 : 2;
+    cmds.push([c, ...t.slice(i, i + n).map(Number)]);
+    i += n;
+  }
+  return cmds;
+}
+
+// 在 ctx 上按印面坐标描出全部笔画；jitter 让刀口略有手刻的不齐
+function drawGlyphs(ctx, width, seed) {
+  const r = rng(seed);
+  const sx = CONTENT.w / 820, sy = CONTENT.h / 820;
+  const k = FACE / 1000;
+  ctx.save();
+  ctx.translate(FACE_X, FACE_X);
+  ctx.scale(k, k);
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  for (const col of LAYOUT) {
+    for (const d of col.strokes) {
+      const j = () => (r() - 0.5) * 4;
+      ctx.beginPath();
+      for (const [c, ...a] of parse(d)) {
+        const p = a.map((v, i) => i % 2 === 0 ? CONTENT.x + (col.x + v) * sx + j() : CONTENT.y + v * sy + j());
+        if (c === 'M') ctx.moveTo(p[0], p[1]);
+        else if (c === 'L') ctx.lineTo(p[0], p[1]);
+        else if (c === 'C') ctx.bezierCurveTo(p[0], p[1], p[2], p[3], p[4], p[5]);
+        else if (c === 'Z') ctx.closePath();
+      }
+      ctx.lineWidth = width * (0.95 + r() * 0.1);
+      ctx.stroke();
+    }
+  }
+  ctx.restore();
+}
+
+// 略带起伏的印面外形
+function facePath(ctx, inset, seed) {
+  const r = rng(seed), x0 = FACE_X + inset, x1 = FACE_X + FACE - inset, steps = 24, rad = 10;
+  const pts = [];
+  const edge = (ax, ay, bx, by) => {
+    for (let i = 0; i < steps; i++) {
+      const t = i / steps;
+      pts.push([ax + (bx - ax) * t + (r() - 0.5) * 3, ay + (by - ay) * t + (r() - 0.5) * 3]);
+    }
+  };
+  edge(x0 + rad, x0, x1 - rad, x0); edge(x1, x0 + rad, x1, x1 - rad);
+  edge(x1 - rad, x1, x0 + rad, x1); edge(x0, x1 - rad, x0, x0 + rad);
+  ctx.beginPath();
+  pts.forEach(([x, y], i) => i ? ctx.lineTo(x, y) : ctx.moveTo(x, y));
+  ctx.closePath();
+}
+
+// 沿印边随机啃掉几处，模拟残破
+function chipEdges(ctx, seed, count, depth) {
+  const r = rng(seed);
+  ctx.save();
+  ctx.globalCompositeOperation = 'destination-out';
+  for (let i = 0; i < count; i++) {
+    const side = Math.floor(r() * 4), t = 0.08 + r() * 0.84;
+    const along = FACE_X + t * FACE;
+    const fixed = side < 2 ? FACE_X : FACE_X + FACE;
+    let cx = side % 2 === 0 ? along : fixed, cy = side % 2 === 0 ? fixed : along;
+    const rad = depth * (0.4 + r() * 0.9);
+    ctx.beginPath();
+    for (let a = 0; a < Math.PI * 2; a += Math.PI / 7) {
+      const rr = rad * (0.6 + r() * 0.6);
+      ctx.lineTo(cx + Math.cos(a) * rr, cy + Math.sin(a) * rr);
+    }
+    ctx.fill();
+  }
+  ctx.restore();
+}
+
+// 把干净的蒙版变成带刀口毛边、印泥浓淡、细小露白的朱砂印
+function texturize(mask, seed) {
+  const blur = document.createElement('canvas');
+  blur.width = blur.height = SIZE;
+  const b = blur.getContext('2d');
+  b.filter = 'blur(2.2px)';
+  b.drawImage(mask, 0, 0);
+  const src = b.getImageData(0, 0, SIZE, SIZE);
+  const out = new ImageData(SIZE, SIZE);
+  const edgeN = makeNoise(seed), inkN = makeNoise(seed + 7), speckN = makeNoise(seed + 13);
+  const r = rng(seed + 29);
+  for (let y = 0; y < SIZE; y++) {
+    for (let x = 0; x < SIZE; x++) {
+      const i = (y * SIZE + x) * 4;
+      const m = src.data[i + 3] / 255;
+      if (m <= 0.02) continue;
+      const rough = (edgeN(x / 7, y / 7, 3) - 0.5) * 0.55;
+      let a = (m + rough - 0.42) / 0.16;
+      a = a < 0 ? 0 : a > 1 ? 1 : a;
+      if (a === 0) continue;
+      const ink = inkN(x / 160, y / 160, 3);
+      const speck = speckN(x / 3.2, y / 3.2, 2);
+      let alpha = a * (0.80 + ink * 0.20);
+      if (speck > 0.80) alpha *= 0.3;
+      else if (speck > 0.75) alpha *= 0.75;
+      if (r() < 0.004) alpha *= 0.4;
+      const shade = 0.92 + ink * 0.12;
+      out.data[i] = Math.min(255, CINNABAR[0] * shade);
+      out.data[i + 1] = CINNABAR[1] * shade;
+      out.data[i + 2] = CINNABAR[2] * shade;
+      out.data[i + 3] = alpha * 255;
+    }
+  }
+  const c = document.createElement('canvas');
+  c.width = c.height = SIZE;
+  c.getContext('2d').putImageData(out, 0, 0);
+  return c;
+}
+
+function newMask() {
+  const c = document.createElement('canvas');
+  c.width = c.height = SIZE;
+  const ctx = c.getContext('2d');
+  ctx.fillStyle = ctx.strokeStyle = '#000';
+  return [c, ctx];
+}
+
+// 朱文：边框 + 字画为红
+function zhuwen() {
+  const [c, ctx] = newMask();
+  facePath(ctx, 18, 11);
+  ctx.lineWidth = 34;
+  ctx.lineJoin = 'round';
+  ctx.stroke();
+  drawGlyphs(ctx, 34, 101);
+  chipEdges(ctx, 41, 9, 22);
+  return texturize(c, 501);
+}
+
+// 白文：满红印面，字画刻去
+function baiwen() {
+  const [c, ctx] = newMask();
+  facePath(ctx, 0, 12);
+  ctx.fill();
+  ctx.globalCompositeOperation = 'destination-out';
+  drawGlyphs(ctx, 44, 101);
+  ctx.globalCompositeOperation = 'source-over';
+  chipEdges(ctx, 43, 11, 26);
+  return texturize(c, 777);
+}
+
+// 宣纸底：米白底色 + 纤维 + 细密颗粒，仅用于预览
+function paper(w, h) {
+  const c = document.createElement('canvas');
+  c.width = w; c.height = h;
+  const ctx = c.getContext('2d');
+  ctx.fillStyle = '#f3eee2';
+  ctx.fillRect(0, 0, w, h);
+  const n = makeNoise(9), img = ctx.getImageData(0, 0, w, h);
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+    const i = (y * w + x) * 4, v = (n(x / 90, y / 90, 4) - 0.5) * 14 + (n(x / 2, y / 2, 1) - 0.5) * 8;
+    img.data[i] += v; img.data[i + 1] += v; img.data[i + 2] += v * 0.9;
+  }
+  ctx.putImageData(img, 0, 0);
+  const r = rng(5);
+  for (let i = 0; i < 900; i++) {
+    const x = r() * w, y = r() * h, len = 20 + r() * 90, ang = r() * Math.PI;
+    ctx.strokeStyle = r() < 0.5 ? 'rgba(120,100,70,.08)' : 'rgba(255,255,255,.35)';
+    ctx.lineWidth = 0.6 + r() * 0.8;
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.quadraticCurveTo(x + Math.cos(ang) * len / 2 + (r() - 0.5) * 20, y + Math.sin(ang) * len / 2 + (r() - 0.5) * 20, x + Math.cos(ang) * len, y + Math.sin(ang) * len);
+    ctx.stroke();
+  }
+  return c;
+}
+
+const zhu = zhuwen(), bai = baiwen();
+const pv = document.getElementById('preview'), p = pv.getContext('2d');
+p.drawImage(paper(2400, 1200), 0, 0);
+p.globalCompositeOperation = 'multiply';
+p.drawImage(bai, 0, 0);
+p.drawImage(zhu, 1200, 0);
+document.getElementById('out-zhuwen').textContent = zhu.toDataURL('image/png');
+document.getElementById('out-baiwen').textContent = bai.toDataURL('image/png');
+document.getElementById('out-preview').textContent = pv.toDataURL('image/png');
+document.title = 'done';
+</script>
+</body>
+</html>
