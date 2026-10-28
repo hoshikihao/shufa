@@ -78,16 +78,6 @@
 .works figcaption .name { font-size: 14px; letter-spacing: .3em; color: var(--muted); }
 .works figcaption .hint { font-size: 12px; letter-spacing: .25em; color: var(--muted); }
 
-.shelf { position: relative; max-width: 960px; margin: 0 auto; padding: 24px 6vw 96px; box-sizing: border-box; display: flex; flex-direction: column; gap: 40px; }
-.shelf h2 { margin: 0; font-size: 30px; font-weight: 400; letter-spacing: .3em; }
-.shelf .lead { margin: 0; font-size: 15px; letter-spacing: .12em; color: var(--muted); }
-.shelf .heading, .shelf form { display: flex; flex-direction: column; gap: 12px; }
-.shelf form { gap: 10px; }
-.shelf label { font-size: 14px; letter-spacing: .2em; color: var(--ink-soft); }
-.shelf input { font-family: inherit; font-size: 18px; letter-spacing: .1em; padding: 14px 4px; border: none; border-bottom: 1px solid var(--ink); border-radius: 0; background: transparent; color: var(--ink); outline-offset: 4px; -webkit-appearance: none; appearance: none; }
-.shelf .cats { display: flex; flex-wrap: wrap; gap: 12px 28px; }
-.shelf .cats a { text-decoration: none; font-size: 16px; letter-spacing: .2em; padding: 10px 0; min-height: 44px; box-sizing: border-box; }
-.shelf .cats small { font-size: 13px; color: var(--muted); letter-spacing: .05em; margin-left: 8px; }
 </style>
 </head>
 <body>
@@ -119,7 +109,7 @@
     <header class="site-header">
       <a class="logo" href="#top" aria-label="星树书房 首页"><img src="assets/logo.png" alt=""></a>
       <nav class="site-nav" aria-label="主导航">
-        <a href="poems.html">诗词</a>
+        <a href="poems.html">诗文</a>
         <a href="works.html">我的</a>
         <a class="x" href="https://x.com/hoshikihao" target="_blank" rel="noopener" aria-label="星树浩的 X（@hoshikihao）"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
       </nav>
@@ -172,26 +162,6 @@
           </span>
         </figcaption>
       </figure>
-    </div>
-  </section>
-
-  <section class="shelf" id="shelf">
-    <div class="heading">
-      <h2>从一首诗开始</h2>
-      <p class="lead">选好诗，选繁体或简体、有格或无格，即可生成小楷作品。</p>
-    </div>
-
-    <form action="poems.html" method="get" role="search">
-      <label for="poemSearch">搜索</label>
-      <input id="poemSearch" name="q" type="search" placeholder="诗题、作者或名句" enterkeyhint="search">
-    </form>
-
-    <div class="cats" role="list" aria-label="诗词分类">
-      <a role="listitem" href="poems.html?cat=唐诗">唐诗<small>366</small></a>
-      <a role="listitem" href="poems.html?cat=宋词">宋词<small>282</small></a>
-      <a role="listitem" href="poems.html?cat=诗经楚辞">诗经楚辞<small>305</small></a>
-      <a role="listitem" href="poems.html?cat=古文名篇">古文名篇<small>7</small></a>
-      <a role="listitem" href="poems.html?cat=经文国学">经文国学<small>3</small></a>
     </div>
   </section>
 
