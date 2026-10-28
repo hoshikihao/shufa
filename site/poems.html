@@ -46,6 +46,11 @@ main { position: relative; max-width: 1180px; margin: 0 auto; padding: 56px 0 11
 .reader .text { writing-mode: vertical-rl; height: 460px; max-width: 100%; overflow-x: auto; overflow-y: hidden; white-space: pre-line; font-size: 20px; line-height: 1.95; letter-spacing: .26em; color: #2c2924; }
 .reader .foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px 24px; }
 .reader .foot p { margin: 0; font-size: 13px; letter-spacing: .15em; color: var(--muted); }
+/* 宽屏两栏并排时，全文栏随滚动固定在视口里；矮窗口里压低竖排区，整栏放得下 */
+@media (min-width: 900px) {
+  .reader { position: sticky; top: 24px; }
+  .reader .text { height: clamp(220px, calc(100vh - 340px), 460px); }
+}
 </style>
 </head>
 <body>

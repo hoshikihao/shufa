@@ -18,7 +18,8 @@ button { font-family: inherit; color: inherit; cursor: pointer; }
 button:disabled { cursor: not-allowed; }
 .sr { position: absolute; opacity: 0; width: 1px; height: 1px; margin: 0; pointer-events: none; }
 
-.page { position: relative; overflow: hidden; padding: 0 6vw; }
+/* clip 不生成滚动容器，页内 sticky 才有效；不支持 clip 的浏览器退回 hidden */
+.page { position: relative; overflow: hidden; overflow: clip; padding: 0 6vw; }
 
 /* 页眉 */
 .site-header { position: relative; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; padding-top: 32px; }
