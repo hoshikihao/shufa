@@ -36,4 +36,3 @@
 ## Deploy
 - `wrangler.jsonc` 只托管 `./site` 静态资源，不写 Worker 脚本
 - 部署、改 Cloudflare 配置、绑定域名前先经用户确认
-- 正式上线等原作者授权
