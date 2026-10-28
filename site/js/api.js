@@ -34,7 +34,7 @@ export async function render(poem, edition, style) {
   const author = trad ? poem.a_trad : poem.a_simp;
   const content = trad ? poem.c_trad : poem.c_simp;
   if (MOCK) {
-    await new Promise((ok) => setTimeout(ok, 4200));
+    await new Promise((ok) => setTimeout(ok, 800));
     if (mockLeft <= 0) throw new ApiError('额度已用完', 429);
     const r = await fetch(style === 'zhalan' ? 'assets/mock-zhalan.jpg' : 'assets/mock-clean.jpg');
     mockLeft -= 1;
