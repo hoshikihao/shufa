@@ -5,6 +5,7 @@
   "assets": {
     "directory": "./site"
   },
+  "routes": [{ "pattern": "shufa.hoshikihao.com", "custom_domain": true }],
   "workers_dev": true,
   "preview_urls": true
 }
