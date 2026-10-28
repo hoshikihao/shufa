@@ -54,6 +54,9 @@ async function generate() {
   ui.stage = 'loading';
   ui.error = '';
   show();
+  // 窄屏上挂轴排在按钮下面，滚过去看书写
+  const hang = document.querySelector('.result');
+  if (hang.getBoundingClientRect().top > window.innerHeight * 0.6) hang.scrollIntoView({ behavior: reducedMotion() ? 'auto' : 'smooth', block: 'start' });
   const started = performance.now();
   let next = 'ready';
   try {

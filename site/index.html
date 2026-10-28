@@ -6,9 +6,15 @@
 <title>星树书房</title>
 <meta name="description" content="择一首诗，写成一幅小楷。">
 <link rel="icon" href="assets/logo.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;600&amp;display=swap" media="print" onload="this.media='all'">
+<script>
+  // 思源宋体等页面加载完再取：连不上 Google Fonts 时（Safari 会因此整页卡住）先用系统宋体
+  addEventListener('load', () => {
+    const l = document.createElement('link');
+    l.rel = 'stylesheet';
+    l.href = 'https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;600&display=swap';
+    document.head.append(l);
+  });
+</script>
 <link rel="stylesheet" href="css/base.css">
 <style>
 @keyframes mountainPan { from { transform: translateX(0) } to { transform: translateX(-50%) } }
@@ -32,6 +38,12 @@
 .bloom.b2 .ink-blob { background: radial-gradient(closest-side, rgba(35,33,29,.20), rgba(35,33,29,.07) 60%, rgba(35,33,29,0)); animation-duration: 18s, 34s; animation-direction: alternate, alternate-reverse; }
 .bloom.b3 { width: 180px; height: 180px; left: 46%; top: 120px; animation: inkBloom 3.2s cubic-bezier(.2,.7,.2,1) 1.6s both; }
 .bloom.b3 .ink-blob { background: radial-gradient(closest-side, rgba(168,53,43,.33), rgba(168,53,43,0)); animation-duration: 18s, 22s; }
+/* 窄屏上墨晕按比例缩小，免得整屏发灰 */
+@media (max-width: 600px) {
+  .bloom.b1 { width: 420px; height: 420px; right: -160px; top: -140px; }
+  .bloom.b2 { width: 300px; height: 300px; left: -140px; top: 420px; }
+  .bloom.b3 { width: 120px; height: 120px; left: 40%; top: 160px; }
+}
 .hills { position: absolute; left: 0; right: 0; bottom: 0; height: 300px; overflow: hidden; }
 .hills .far { position: absolute; left: 0; bottom: 40px; width: 200%; height: 240px; animation: mountainPan 160s linear infinite; }
 .hills .near { position: absolute; left: 0; bottom: 0; width: 200%; height: 190px; animation: mountainPan 90s linear infinite; }
