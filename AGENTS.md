@@ -3,7 +3,8 @@
 ## Layout
 - `site/`：正式网站，纯静态，Cloudflare 直接托管此目录
   - 页面：`index.html`（首页）、`poems.html`（选诗）、`create.html`（生成，`?id=` 指定诗）
-  - `css/` 共用样式；`js/water.js` 水面与墨虾，`js/api.js` 原作者接口，`js/poems.js` 诗库；`assets/` 图片；`data/anthology.json` 诗库
+  - `css/` 共用样式；`js/water.js` 水面与墨虾，`js/api.js` 原作者接口，`js/poems.js` 诗库，`js/page-*.js` 各页逻辑；`assets/` 图片；`data/anthology.json` 诗库
+  - 页面专属样式写在该页 `<style>` 里
 - `design/`：设计稿与素材，只读参考；不往画布发布
 - `docs/`：原项目前端，只读参考，不改不删
 - 临时脚本、截图放会话 scratchpad，不进仓库
