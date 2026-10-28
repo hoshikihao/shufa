@@ -1,0 +1,11 @@
+// 只托管 site/ 下的静态文件，没有 Worker 脚本
+{
+  "name": "hoshiki-shufa",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./site"
+  },
+  "routes": [{ "pattern": "shufa.hoshikihao.com", "custom_domain": true }],
+  "workers_dev": true,
+  "preview_urls": true
+}

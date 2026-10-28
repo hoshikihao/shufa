@@ -4,6 +4,8 @@
 *.woff
 *.woff2
 *.eot
+# 例外：网站自托管的开源字体切片（思源宋体，SIL OFL）
+!site/fonts/*.woff2
 *.svg
 *.zip
 *.tar.gz
@@ -14,3 +16,4 @@ __pycache__/
 
 server/
 
+.wrangler/

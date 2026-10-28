@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>星树书房 · 生成</title>
+<link rel="icon" href="assets/logo.png">
+<link rel="stylesheet" href="css/fonts.css" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="css/base.css">
+<style>
+@keyframes inkPulse { 0%, 100% { transform: scale(.7); opacity: .55 } 50% { transform: scale(1.15); opacity: 1 } }
+@keyframes inkSettle { 0% { opacity: 0; filter: blur(8px) } 35% { opacity: .35 } 100% { opacity: 1; filter: blur(0) } }
+
+main { position: relative; max-width: 1180px; margin: 0 auto; padding: 40px 0 112px; display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 64px 56px; }
+
+.settings { flex: 1 1 300px; max-width: 420px; min-width: 0; display: flex; flex-direction: column; gap: 40px; }
+.settings .back { align-self: flex-start; text-decoration: none; font-size: 14px; letter-spacing: .2em; color: var(--muted); padding: 12px 0; }
+.settings .heading { display: flex; flex-direction: column; gap: 10px; }
+.settings h1 { margin: 0; font-size: 40px; font-weight: 400; letter-spacing: .3em; }
+.settings .meta { margin: 0; font-size: 14px; letter-spacing: .2em; color: var(--muted); }
+fieldset { margin: 0; padding: 0; border: none; display: flex; flex-direction: column; gap: 14px; }
+legend { padding: 0; margin-bottom: 14px; font-size: 14px; letter-spacing: .3em; color: var(--ink-soft); }
+.choices { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.choice { display: flex; gap: 4px; min-height: 44px; border: 1px solid rgba(35,33,29,.2); background: transparent; cursor: pointer; }
+.choice:has(.sr:checked) { border-color: var(--ink); background: rgba(35,33,29,.05); }
+.choice:has(.sr:focus-visible) { outline: 2px solid var(--ink); outline-offset: 3px; }
+.choice.edition { flex-direction: column; padding: 16px 18px; }
+.choice.edition .t { font-size: 20px; letter-spacing: .3em; }
+.choice .s { font-size: 12px; letter-spacing: .15em; color: var(--muted); }
+.choice.paper { align-items: center; gap: 14px; padding: 14px 16px; }
+.choice.paper .swatch { flex: none; width: 36px; height: 46px; background: #f6f1e4; box-shadow: 0 0 0 1px rgba(80,66,48,.25); }
+.choice.paper .swatch.ruled { background: repeating-linear-gradient(to left, #f6f1e4 0 5px, rgba(60,42,30,.55) 5px 6px), #f6f1e4; box-shadow: 0 0 0 1px rgba(60,42,30,.55); }
+.choice.paper .words { display: flex; flex-direction: column; gap: 4px; }
+.choice.paper .t { font-size: 17px; letter-spacing: .25em; }
+.go { display: flex; flex-direction: column; gap: 14px; }
+.go button { min-height: 56px; border: none; background: var(--ink); color: var(--paper); font-size: 18px; letter-spacing: .8em; padding: 0 0 0 .8em; }
+.go button:disabled { background: #8a8379; }
+.go p { margin: 0; font-size: 13px; letter-spacing: .12em; color: var(--muted); min-height: 1.5em; }
+.go p.warn { color: var(--accent); }
+
+.result { flex: 1 1 440px; max-width: 560px; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 28px; }
+.hang { width: 100%; max-width: 460px; display: flex; flex-direction: column; align-items: center; transform-origin: 50% 0; animation: scrollSway 9s ease-in-out infinite alternate; }
+.hang .scroll-mount { width: calc(100% - 28px); }
+.hang .rod-bottom { display: block; width: calc(100% + 24px); height: 16px; border-radius: 8px; background: linear-gradient(90deg, #241b14 0, #241b14 22px, #4a3a2d 22px, #3a2d22 50%, #4a3a2d calc(100% - 22px), #241b14 calc(100% - 22px)); }
+/* 纸心比例按接口实际出图（约 1516×1764），作品显现时挂轴不跳 */
+.artwork { display: flex; flex-direction: column; animation: inkSettle 1.8s ease-out both; }
+.artwork img { height: auto; }
+.blank { position: relative; width: 100%; aspect-ratio: 1516 / 1764; background: #f6f1e4; box-shadow: inset 0 0 0 12px #f6f1e4, inset 0 0 0 13px rgba(80,66,48,.18), 0 0 0 1px rgba(80,66,48,.22); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.blank.ruled { background: repeating-linear-gradient(to left, #f6f1e4 0 calc(10% - 1px), rgba(60,42,30,.45) calc(10% - 1px) 10%), #f6f1e4; box-shadow: inset 0 0 0 12px #f6f1e4, inset 0 0 0 13px rgba(60,42,30,.45), 0 0 0 1px rgba(80,66,48,.22); }
+.blank .blob { position: absolute; width: 46%; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(closest-side, rgba(35,33,29,.38), rgba(35,33,29,.12) 60%, rgba(35,33,29,0)); filter: blur(14px); animation: inkPulse 2.4s ease-in-out infinite, inkMorph 6s ease-in-out infinite alternate; }
+.blank p { position: relative; z-index: 2; margin: 0; padding: 18px 10px; writing-mode: vertical-rl; font-size: 17px; letter-spacing: .5em; color: var(--muted); background: #f6f1e4; }
+.blank p.warn { color: var(--accent); }
+.pond-layer { position: absolute; left: 7px; top: 7px; width: calc(100% - 14px); aspect-ratio: 1516 / 1764; pointer-events: none; z-index: 1; }
+.caption { margin: 0; font-size: 14px; letter-spacing: .3em; color: var(--muted); text-align: center; }
+.actions { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 12px 32px; }
+.actions .btn-line { letter-spacing: .5em; padding: 14px 22px 14px 30px; }
+.actions .again { text-decoration: none; font-size: 15px; letter-spacing: .3em; color: var(--ink-soft); padding: 12px 0; }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="ink-wash" aria-hidden="true"><div class="ink-blob"></div></div>
+
+  <header class="site-header">
+    <a class="logo" href="index.html" aria-label="星树书房 首页"><img src="assets/logo.png" alt=""></a>
+    <nav class="site-nav" aria-label="主导航">
+      <a class="on" href="poems.html">诗词</a>
+      <a href="index.html#works">作品</a>
+      <a href="index.html#about">关于</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="settings" aria-label="书写设置">
+      <a class="back" id="back" href="poems.html">← 换一首诗</a>
+
+      <div class="heading">
+        <h1 id="title"></h1>
+        <p class="meta" id="meta"></p>
+      </div>
+
+      <fieldset>
+        <legend>字体</legend>
+        <div class="choices">
+          <label class="choice edition">
+            <input class="sr" type="radio" name="edition" value="trad" checked>
+            <span class="t">繁體</span>
+            <span class="s">传统字形</span>
+          </label>
+          <label class="choice edition">
+            <input class="sr" type="radio" name="edition" value="simp">
+            <span class="t">简体</span>
+            <span class="s">通行字形</span>
+          </label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>纸样</legend>
+        <div class="choices">
+          <label class="choice paper">
+            <input class="sr" type="radio" name="style" value="clean" checked>
+            <span class="swatch" aria-hidden="true"></span>
+            <span class="words"><span class="t">素笺</span><span class="s">无格</span></span>
+          </label>
+          <label class="choice paper">
+            <input class="sr" type="radio" name="style" value="zhalan">
+            <span class="swatch ruled" aria-hidden="true"></span>
+            <span class="words"><span class="t">乌丝栏</span><span class="s">有格</span></span>
+          </label>
+        </div>
+      </fieldset>
+
+      <div class="go">
+        <button type="button" id="generate">生成</button>
+        <p id="status" aria-live="polite"></p>
+      </div>
+    </section>
+
+    <section class="result" aria-label="作品" aria-live="polite">
+      <div class="hang">
+        <svg class="scroll-hanger" viewBox="0 0 440 54" aria-hidden="true">
+          <path d="M96 54 L220 6 L344 54" fill="none" stroke="#6b5a48" stroke-width="1.2"></path>
+          <circle cx="220" cy="6" r="3.5" fill="#3b2e24"></circle>
+        </svg>
+        <span class="scroll-rod-top"></span>
+        <div class="scroll-mount scroll-shadow">
+          <div class="scroll-core">
+            <div class="artwork" id="artwork" hidden><img id="artImg" alt=""></div>
+            <div class="blank" id="blank">
+              <div class="blob" id="blob" aria-hidden="true" hidden></div>
+              <p id="hint">点生成，作品挂在这里</p>
+            </div>
+            <canvas class="pond-layer" id="inkLayer" aria-hidden="true"></canvas>
+            <canvas class="pond-layer" id="waterLayer" aria-hidden="true"></canvas>
+          </div>
+        </div>
+        <span class="rod-bottom"></span>
+      </div>
+
+      <p class="caption" id="caption"></p>
+
+      <div class="actions" id="actions" hidden>
+        <a class="btn-line" id="download" href="#">下载作品</a>
+        <a class="again" href="poems.html">再写一首</a>
+      </div>
+    </section>
+  </main>
+</div>
+<script type="module" src="js/page-create.js"></script>
+</body>
+</html>

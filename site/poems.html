@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>星树书房 · 选诗</title>
+<link rel="icon" href="assets/logo.png">
+<link rel="stylesheet" href="css/fonts.css" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="css/base.css">
+<style>
+main { position: relative; max-width: 1180px; margin: 0 auto; padding: 56px 0 112px; display: flex; flex-direction: column; gap: 48px; }
+.title-row { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 28px; }
+.title-row h1 { margin: 0; font-size: 34px; font-weight: 400; letter-spacing: .3em; }
+.title-row p { margin: 0; font-size: 14px; letter-spacing: .15em; color: var(--muted); }
+.columns { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 56px 48px; }
+
+.catalog { flex: 1 1 300px; max-width: 480px; min-width: 0; display: flex; flex-direction: column; gap: 28px; }
+.search { display: flex; flex-direction: column; gap: 10px; }
+.search label { font-size: 14px; letter-spacing: .2em; color: var(--ink-soft); }
+.search input { font-family: inherit; font-size: 18px; letter-spacing: .1em; padding: 12px 4px; border: none; border-bottom: 1px solid var(--ink); border-radius: 0; background: transparent; color: var(--ink); outline-offset: 4px; -webkit-appearance: none; appearance: none; }
+.cats { display: flex; flex-wrap: wrap; gap: 4px 20px; }
+.cats button { background: none; border: none; border-bottom: 1px solid transparent; padding: 10px 0; min-height: 44px; font-size: 16px; letter-spacing: .2em; color: var(--ink); }
+.cats button[aria-pressed="true"] { color: var(--accent); border-bottom-color: var(--accent); }
+.cats small { font-size: 12px; color: var(--muted); letter-spacing: .05em; margin-left: 6px; }
+.results { display: flex; flex-direction: column; gap: 6px; }
+.results .label { margin: 0 0 6px; font-size: 13px; letter-spacing: .15em; color: var(--muted); }
+.results ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; border-bottom: 1px solid var(--rule); }
+.results li { border-top: 1px solid var(--rule); }
+.results li button { width: 100%; display: flex; align-items: baseline; gap: 16px; padding: 16px 12px; min-height: 44px; border: none; background: transparent; text-align: left; }
+.results li button[aria-current="true"] { background: rgba(35,33,29,.06); }
+.results li .t { flex: 1 1 auto; min-width: 0; font-size: 18px; letter-spacing: .18em; color: var(--ink); }
+.results li button[aria-current="true"] .t { color: var(--accent); }
+.results li .a { font-size: 14px; letter-spacing: .15em; color: var(--muted); white-space: nowrap; }
+.results li .n { font-size: 12px; letter-spacing: .05em; color: var(--muted); white-space: nowrap; min-width: 3.5em; text-align: right; }
+.results .empty { margin: 0; padding: 24px 12px; font-size: 15px; letter-spacing: .12em; color: var(--muted); }
+.results .more { align-self: flex-start; margin-top: 12px; background: none; border: none; border-bottom: 1px solid var(--ink); padding: 10px 2px; min-height: 44px; font-size: 15px; letter-spacing: .3em; }
+.custom { display: flex; flex-direction: column; gap: 6px; padding: 18px 20px; border: 1px dashed rgba(35,33,29,.35); }
+.custom .t { font-size: 15px; letter-spacing: .25em; color: var(--ink-soft); }
+.custom .s { font-size: 13px; letter-spacing: .12em; color: var(--muted); }
+
+.reader { flex: 1 1 440px; min-width: 0; box-sizing: border-box; padding: 44px clamp(20px, 4vw, 48px) 40px; background: #f8f4ea; box-shadow: 0 18px 40px rgba(35,33,29,.10), 0 0 0 1px rgba(80,66,48,.12); display: flex; flex-direction: column; gap: 32px; scroll-margin-top: 16px; }
+.reader .head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 24px; }
+.reader h2 { margin: 0; font-size: 28px; font-weight: 400; letter-spacing: .3em; }
+.reader .meta { margin: 0; font-size: 14px; letter-spacing: .2em; color: var(--muted); }
+.reader .sheet { display: flex; justify-content: flex-end; border-top: 1px solid rgba(35,33,29,.14); border-bottom: 1px solid rgba(35,33,29,.14); padding: 28px 0; }
+.reader .text { writing-mode: vertical-rl; height: 460px; max-width: 100%; overflow-x: auto; overflow-y: hidden; white-space: pre-line; font-size: 20px; line-height: 1.95; letter-spacing: .26em; color: #2c2924; }
+.reader .foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px 24px; }
+.reader .foot p { margin: 0; font-size: 13px; letter-spacing: .15em; color: var(--muted); }
+/* 宽屏两栏并排时，全文栏随滚动固定在视口里；矮窗口里压低竖排区，整栏放得下 */
+@media (min-width: 900px) {
+  .reader { position: sticky; top: 24px; }
+  .reader .text { height: clamp(220px, calc(100vh - 340px), 460px); }
+}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="ink-wash" aria-hidden="true"><div class="ink-blob"></div></div>
+
+  <header class="site-header">
+    <a class="logo" href="index.html" aria-label="星树书房 首页"><img src="assets/logo.png" alt=""></a>
+    <nav class="site-nav" aria-label="主导航">
+      <a class="on" href="poems.html" aria-current="page">诗词</a>
+      <a href="index.html#works">作品</a>
+      <a href="index.html#about">关于</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="title-row">
+      <h1>择一首诗</h1>
+      <p>唐诗 · 宋词 · 诗经楚辞 · 古文 · 经文，共 963 首</p>
+    </div>
+
+    <div class="columns">
+      <section class="catalog" aria-label="诗目">
+        <div class="search">
+          <label for="poemSearch">搜索</label>
+          <input id="poemSearch" type="search" placeholder="诗题、作者或名句" enterkeyhint="search" autocomplete="off">
+        </div>
+
+        <div class="cats" id="cats" role="group" aria-label="诗词分类"></div>
+
+        <div class="results">
+          <p class="label" id="resultLabel" aria-live="polite">正在取诗库……</p>
+          <ul id="list"></ul>
+          <p class="empty" id="empty" hidden>没有找到这首诗，换个字词试试。</p>
+          <button type="button" class="more" id="more" hidden>再看 12 首</button>
+        </div>
+
+        <div class="custom">
+          <span class="t">自己写一段</span>
+          <span class="s">暂未开放 · [待原作者授权后确认]</span>
+        </div>
+      </section>
+
+      <article class="reader" id="reader" aria-labelledby="poemTitle">
+        <div class="head">
+          <h2 id="poemTitle"></h2>
+          <p class="meta" id="poemMeta"></p>
+        </div>
+        <div class="sheet">
+          <div class="text" id="poemText" tabindex="0" aria-label="全文"></div>
+        </div>
+        <div class="foot">
+          <p>下一步选择繁简与格式</p>
+          <a class="btn-line" id="toCreate" href="create.html">写成小楷</a>
+        </div>
+      </article>
+    </div>
+  </main>
+</div>
+<script type="module" src="js/page-poems.js"></script>
+</body>
+</html>
