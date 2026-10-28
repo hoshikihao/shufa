@@ -2,8 +2,8 @@
 
 ## Layout
 - `site/`：正式网站，纯静态，Cloudflare 直接托管此目录
-  - 页面：`index.html`（首页）、`poems.html`（选诗）、`create.html`（生成，`?id=` 指定诗）、`404.html`（不存在的路径）
-  - `css/` 共用样式；`js/water.js` 水面与墨虾，`js/api.js` 原作者接口，`js/poems.js` 诗库，`js/page-*.js` 各页逻辑；`assets/` 图片；`fonts/` 思源宋体切片（`css/fonts.css` 引用）；`data/anthology.json` 诗库
+  - 页面：`index.html`（首页）、`poems.html`（选诗）、`create.html`（生成，`?id=` 指定诗）、`works.html`（我的：本机作品）、`404.html`（不存在的路径）
+  - `css/` 共用样式；`js/water.js` 水面与墨虾，`js/api.js` 原作者接口，`js/poems.js` 诗库，`js/works.js` 本机作品存储，`js/page-*.js` 各页逻辑；`assets/` 图片；`fonts/` 思源宋体切片（`css/fonts.css` 引用）；`data/anthology.json` 诗库
   - 页面专属样式写在该页 `<style>` 里
 - `design/`：设计稿与素材，只读参考；不往画布发布
 - `docs/`：原项目前端，只读参考，不改不删
@@ -25,6 +25,7 @@
 - 请求从访问者浏览器直接发出，不经 Worker 或任何代理
 - `poem_id` 只取自诗库
 - 作品图上的签条和二维码不裁剪、不遮挡
+- 生成的作品只存在访问者本机浏览器（IndexedDB），不上传、不跨访问者汇总
 - 本地地址（`localhost`、`127.0.0.1`）或带 `?mock=1` 时走模拟模式，返回 `site/assets/` 样张，不发真实请求；本地带 `?mock=0` 才发真实请求
 - 开发期每次真实生成先征得用户同意
 
@@ -32,7 +33,7 @@
 - 本地服务：`python3 -m http.server 8731 --directory site`，用内置浏览器逐页检查
 - 动效在内置浏览器里检查，不凭 headless 截图判断
 - 手机排版在 iOS 模拟器（iPhone 17 Pro）检查
-- 检查三页在减少动态效果时的降级
+- 检查各页在减少动态效果时的降级
 
 ## Deploy
 - `wrangler.jsonc` 只托管 `./site` 静态资源，不写 Worker 脚本
