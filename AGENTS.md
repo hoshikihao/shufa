@@ -14,6 +14,7 @@
 - 视觉以 `design/project/*.dc.html` 为准
 - 水面与墨虾代码只在 `site/js/water.js` 保留一份
 - 所有动效响应 `prefers-reduced-motion`
+- `site/404.html` 里的资源和链接写根路径（以 `/` 开头）
 - 字体只用本站 `site/fonts/` 的思源宋体，不引用外部字体服务；字体样式表不阻塞渲染
 - `site/data/anthology.json` 与 `docs/anthology.json` 内容一致
 - 字体文件、打包文件不进仓库；`site/fonts/` 下的开源字体切片除外
