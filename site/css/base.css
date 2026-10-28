@@ -1,4 +1,4 @@
-/* 三页共用：配色、字体、页眉、页脚、挂轴、墨晕和动画 */
+/* 各页共用：配色、字体、页眉、页脚、挂轴、墨晕和动画 */
 :root {
   --paper: #f3eee2;
   --ink: #23211d;
@@ -28,6 +28,9 @@ button:disabled { cursor: not-allowed; }
 .site-nav { display: flex; gap: 36px; font-size: 15px; letter-spacing: .3em; }
 .site-nav a { text-decoration: none; padding: 12px 0; }
 .site-nav a.on { color: var(--accent); border-bottom: 1px solid var(--accent); }
+/* X 图标：外扩点击区到 44px，不改变与文字的间距 */
+.site-nav .x { display: flex; align-items: center; padding: 14px; margin: 0 -14px; }
+.site-nav .x svg { width: 16px; height: 16px; fill: currentColor; }
 
 /* 页脚 */
 .site-footer { max-width: 960px; margin: 0 auto; padding: 48px 6vw 64px; box-sizing: border-box; border-top: 1px solid var(--rule); display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px; font-size: 13px; letter-spacing: .15em; color: var(--muted); }

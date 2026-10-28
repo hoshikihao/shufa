@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>星树书房 · 我的</title>
+<meta name="description" content="在这台设备上写成的小楷作品。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="星树书房 · 我的">
+<meta property="og:description" content="在这台设备上写成的小楷作品。">
+<meta property="og:image" content="https://shufa.hoshikihao.com/assets/share-card.jpg">
+<meta property="og:url" content="https://shufa.hoshikihao.com/works">
+<link rel="icon" href="assets/logo.png">
+<link rel="stylesheet" href="css/fonts.css" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="css/base.css">
+<style>
+main { position: relative; max-width: 1180px; margin: 0 auto; padding: 56px 0 112px; display: flex; flex-direction: column; gap: 40px; }
+.title-row { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 28px; }
+.title-row h1 { margin: 0; font-size: 34px; font-weight: 400; letter-spacing: .3em; }
+.title-row p { margin: 0; font-size: 14px; letter-spacing: .15em; color: var(--muted); }
+.note { margin: -16px 0 0; font-size: 13px; line-height: 1.9; letter-spacing: .12em; color: var(--muted); }
+
+.gallery { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr)); gap: 40px 32px; align-items: start; }
+.gallery li { display: flex; flex-direction: column; gap: 14px; }
+/* 作品整幅显示，签条和二维码不裁剪 */
+.gallery .sheet { display: block; padding: 10px; background: #f8f4ea; box-shadow: 0 14px 30px rgba(35,33,29,.10), 0 0 0 1px rgba(80,66,48,.12); }
+.gallery .sheet img { width: 100%; height: auto; display: block; }
+.gallery h2 { margin: 0 0 -8px; font-size: 18px; font-weight: 400; letter-spacing: .2em; }
+.gallery .meta + .meta { margin-top: -10px; }
+.gallery .meta { margin: 0; font-size: 13px; letter-spacing: .12em; color: var(--muted); }
+.gallery .ops { display: flex; flex-wrap: wrap; gap: 0 24px; }
+.gallery .ops a, .gallery .ops button { background: none; border: none; padding: 12px 0; min-height: 44px; box-sizing: border-box; font-size: 14px; letter-spacing: .25em; text-decoration: none; color: var(--ink-soft); }
+.gallery .ops button:hover { color: var(--accent); }
+
+.empty { display: flex; flex-direction: column; align-items: flex-start; gap: 28px; padding: 24px 0; }
+.empty p { margin: 0; font-size: 16px; letter-spacing: .15em; color: var(--muted); }
+@media (max-width: 600px) {
+  .gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px 16px; }
+  .gallery .sheet { padding: 6px; }
+  .gallery h2 { font-size: 16px; letter-spacing: .12em; }
+  .gallery .meta { font-size: 12px; letter-spacing: .05em; }
+  .gallery .ops { gap: 0 16px; }
+  .gallery .ops a, .gallery .ops button { letter-spacing: .15em; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="ink-wash" aria-hidden="true"><div class="ink-blob"></div></div>
+
+  <header class="site-header">
+    <a class="logo" href="index.html" aria-label="星树书房 首页"><img src="assets/logo.png" alt=""></a>
+    <nav class="site-nav" aria-label="主导航">
+      <a href="poems.html">诗文</a>
+      <a class="on" href="works.html" aria-current="page">我的</a>
+      <a class="x" href="https://x.com/hoshikihao" target="_blank" rel="noopener" aria-label="星树浩的 X（@hoshikihao）"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="title-row">
+      <h1>我的</h1>
+      <p id="summary" aria-live="polite">正在读取……</p>
+    </div>
+    <p class="note">作品只存在这台设备的浏览器里，换设备看不到，清除浏览数据会一并清除；喜欢的请下载保存。</p>
+
+    <ul class="gallery" id="gallery"></ul>
+
+    <div class="empty" id="empty" hidden>
+      <p>还没有作品，写成的小楷会收在这里。</p>
+      <a class="btn-line" href="poems.html">选一诗文</a>
+    </div>
+  </main>
+</div>
+<script type="module" src="js/page-works.js"></script>
+</body>
+</html>

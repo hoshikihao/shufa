@@ -2,6 +2,7 @@
 // 书写中纸面化作一池水，墨滴落下荡开涟漪、墨在水里洇开，墨虾从纸边游过；写完水面平息、墨虾游走，作品显现
 import { loadPoems } from './poems.js';
 import { fetchQuota, render, ApiError } from './api.js';
+import { saveWork } from './works.js';
 import { Water, makeShrimp, paddle, glide, flex, drawShrimp, fitCanvas, reducedMotion, clamp, turnTo } from './water.js';
 
 const $ = (id) => document.getElementById(id);
@@ -70,6 +71,9 @@ async function generate() {
     download.href = ui.url;
     download.download = `${poem.t_simp.replace(/[\\/:*?"<>|]/g, '')}_星树书房.${ui.format}`;
     next = 'done';
+    // 存进「我的」；存不下时提示先下载，不影响这次展示
+    saveWork({ poemId: poem.id, title: poem.t_simp, author: poem.a_simp, edition: ui.edition, style: ui.style, format: ui.format, blob: res.blob })
+      .catch(() => { ui.error = '这幅没能存进「我的」，请先下载保存'; show(); });
   } catch (err) {
     // 接口失败也等动画放完再回到待生成，免得一闪而过
     const left = MIN_WRITE_MS - (performance.now() - started);
