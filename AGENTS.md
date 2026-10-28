@@ -3,7 +3,7 @@
 ## Layout
 - `site/`：正式网站，纯静态，Cloudflare 直接托管此目录
   - 页面：`index.html`（首页）、`poems.html`（选诗）、`create.html`（生成，`?id=` 指定诗）
-  - `css/` 共用样式；`js/water.js` 水面与墨虾，`js/api.js` 原作者接口，`js/poems.js` 诗库，`js/page-*.js` 各页逻辑；`assets/` 图片；`data/anthology.json` 诗库
+  - `css/` 共用样式；`js/water.js` 水面与墨虾，`js/api.js` 原作者接口，`js/poems.js` 诗库，`js/page-*.js` 各页逻辑；`assets/` 图片；`fonts/` 思源宋体切片（`css/fonts.css` 引用）；`data/anthology.json` 诗库
   - 页面专属样式写在该页 `<style>` 里
 - `design/`：设计稿与素材，只读参考；不往画布发布
 - `docs/`：原项目前端，只读参考，不改不删
@@ -14,9 +14,9 @@
 - 视觉以 `design/project/*.dc.html` 为准
 - 水面与墨虾代码只在 `site/js/water.js` 保留一份
 - 所有动效响应 `prefers-reduced-motion`
-- 网络字体不阻塞渲染
+- 字体只用本站 `site/fonts/` 的思源宋体，不引用外部字体服务；字体样式表不阻塞渲染
 - `site/data/anthology.json` 与 `docs/anthology.json` 内容一致
-- 字体文件、打包文件不进仓库
+- 字体文件、打包文件不进仓库；`site/fonts/` 下的开源字体切片除外
 
 ## API
 - 只调用 `POST /shufa-api/api/render` 和 `GET /shufa-api/api/quota`；不调用 `/api/admin/*`，不发送 `admin_key`

@@ -6,15 +6,7 @@
 <title>星树书房</title>
 <meta name="description" content="择一首诗，写成一幅小楷。">
 <link rel="icon" href="assets/logo.png">
-<script>
-  // 思源宋体等页面加载完再取：连不上 Google Fonts 时（Safari 会因此整页卡住）先用系统宋体
-  addEventListener('load', () => {
-    const l = document.createElement('link');
-    l.rel = 'stylesheet';
-    l.href = 'https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;600&display=swap';
-    document.head.append(l);
-  });
-</script>
+<link rel="stylesheet" href="css/fonts.css" media="print" onload="this.media='all'">
 <link rel="stylesheet" href="css/base.css">
 <style>
 @keyframes mountainPan { from { transform: translateX(0) } to { transform: translateX(-50%) } }
