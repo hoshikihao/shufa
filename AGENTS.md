@@ -11,7 +11,7 @@
 
 ## Implementation
 - 只用 HTML、CSS、原生 JavaScript；不加依赖，不加构建步骤，不搬画布运行时
-- 视觉以 `design/project/*.dc.html` 为准
+- 视觉以 `site/` 现状为准；`design/project/*.dc.html` 只作风格参考，不据此回改已有页面
 - 水面与墨虾代码只在 `site/js/water.js` 保留一份
 - 所有动效响应 `prefers-reduced-motion`
 - `site/404.html` 里的资源和链接写根路径（以 `/` 开头）
