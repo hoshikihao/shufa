@@ -33,7 +33,7 @@
 
 ## Verification
 - 本地服务：`python3 -m http.server 8731 --directory site`，用内置浏览器逐页检查
-- `tools/` 本地服务：`python3 -m http.server 8732 --directory tools`
+- `tools/` 本地服务：仓库根目录运行 `python3 -m http.server 8732 --bind 127.0.0.1`，打开 `/tools/writer.html`
 - 动效在内置浏览器里检查，不凭 headless 截图判断
 - 手机排版在 iOS 模拟器（iPhone 17 Pro）检查
 - 检查各页在减少动态效果时的降级
