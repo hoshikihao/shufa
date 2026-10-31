@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>自写诗文 · 本机</title>
+<style>
+:root { --paper: #efe8d8; --ink: #23211d; --muted: #7a7266; --rule: rgba(35,33,29,.18); --accent: #a8221a; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--paper); color: var(--ink); font-family: "Songti SC", "Noto Serif SC", serif; }
+main { max-width: 1180px; margin: 0 auto; padding: 40px 16px 80px; display: flex; flex-wrap: wrap; align-items: flex-start; gap: 40px 48px; }
+.form { flex: 1 1 300px; max-width: 400px; display: flex; flex-direction: column; gap: 24px; }
+h1 { margin: 0; font-size: 30px; font-weight: 400; letter-spacing: .3em; }
+.note { margin: 6px 0 0; font-size: 13px; letter-spacing: .08em; line-height: 1.7; color: var(--muted); }
+.note a { color: inherit; }
+fieldset { margin: 0; padding: 0; border: none; display: flex; flex-direction: column; gap: 10px; }
+legend { padding: 0; margin-bottom: 10px; font-size: 14px; letter-spacing: .3em; color: var(--muted); }
+.row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; font-size: 15px; letter-spacing: .1em; }
+.font-slot { justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--rule); }
+.font-slot .name { color: var(--muted); font-size: 13px; letter-spacing: .05em; word-break: break-all; }
+.pick { cursor: pointer; border-bottom: 1px solid var(--ink); padding: 6px 2px; }
+.pick input { display: none; }
+input[type=text], input[type=number], textarea { width: 100%; font: inherit; font-size: 17px; letter-spacing: .1em; padding: 10px 8px; border: 1px solid var(--rule); background: #f8f4ea; color: var(--ink); }
+textarea { min-height: 220px; line-height: 1.8; resize: vertical; }
+label.field { display: flex; flex-direction: column; gap: 6px; font-size: 14px; letter-spacing: .2em; color: var(--muted); }
+.actions { display: flex; align-items: center; gap: 20px; }
+.actions a { display: inline-block; padding: 14px 26px; background: var(--ink); color: var(--paper); text-decoration: none; letter-spacing: .5em; }
+.actions a[aria-disabled=true] { background: #8a8379; pointer-events: none; }
+#status { margin: 0; font-size: 13px; letter-spacing: .1em; color: var(--accent); min-height: 1.5em; }
+.preview { flex: 1 1 440px; min-width: 0; display: flex; justify-content: center; }
+canvas { max-width: 100%; max-height: 82vh; width: auto; height: auto; box-shadow: 0 18px 40px rgba(35,33,29,.12), 0 0 0 1px rgba(80,66,48,.18); }
+</style>
+</head>
+<body>
+<main>
+  <section class="form">
+    <div>
+      <h1>自写诗文</h1>
+      <p class="note">只在本机使用。字体从你电脑上选取，存在这台电脑的浏览器里，不上传。字体请从 <a href="https://dvbs2000.github.io/liuchunlin-shufa/" target="_blank" rel="noopener">刘春霖 AI 小楷书房官网</a> 领取，个人非商用。</p>
+    </div>
+
+    <fieldset>
+      <legend>字体</legend>
+      <div class="row font-slot">
+        <label><input type="radio" name="edition" value="trad" checked> 繁體</label>
+        <span class="name" id="name-trad">未载入</span>
+        <label class="pick">选择 TTF<input type="file" accept=".ttf,.otf" data-edition="trad"></label>
+      </div>
+      <div class="row font-slot">
+        <label><input type="radio" name="edition" value="simp"> 简体</label>
+        <span class="name" id="name-simp">未载入</span>
+        <label class="pick">选择 TTF<input type="file" accept=".ttf,.otf" data-edition="simp"></label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>纸样</legend>
+      <div class="row">
+        <label><input type="radio" name="style" value="clean" checked> 素笺</label>
+        <label><input type="radio" name="style" value="zhalan"> 乌丝栏</label>
+      </div>
+    </fieldset>
+
+    <label class="field">题目<input type="text" id="title" value="静夜思"></label>
+    <label class="field">作者<input type="text" id="author" value="李白"></label>
+    <label class="field">正文（换行即换列）<textarea id="text">床前明月光，疑是地上霜。
+举头望明月，低头思故乡。</textarea></label>
+
+    <div class="row">
+      <label class="field" style="flex:1">每列字数（留空自动）<input type="number" id="rows" min="3" max="40" placeholder="自动"></label>
+      <label><input type="checkbox" id="strip" checked> 去掉标点</label>
+    </div>
+
+    <div class="actions">
+      <a id="download" href="#" aria-disabled="true">下载</a>
+    </div>
+    <p id="status" aria-live="polite"></p>
+  </section>
+
+  <section class="preview">
+    <canvas id="sheet" width="800" height="1000" aria-label="预览"></canvas>
+  </section>
+</main>
+
+<script>
+// 本机自写：选取的字体存进本机 IndexedDB，用 FontFace 载入，在 canvas 上竖排成一幅，导出 PNG
+
+const $ = (id) => document.getElementById(id);
+const canvas = $('sheet'), ctx = canvas.getContext('2d'), status = $('status'), download = $('download');
+const loaded = { trad: false, simp: false };
+
+// ———— 字体存取 ————
+
+let opening = null;
+function openDb() {
+  if (!opening) {
+    opening = new Promise((ok, fail) => {
+      const req = indexedDB.open('writer', 1);
+      req.onupgradeneeded = () => req.result.createObjectStore('fonts');
+      req.onsuccess = () => ok(req.result);
+      req.onerror = () => fail(req.error);
+    });
+  }
+  return opening;
+}
+
+async function run(mode, fn) {
+  const db = await openDb();
+  return new Promise((ok, fail) => {
+    const tx = db.transaction('fonts', mode), req = fn(tx.objectStore('fonts'));
+    tx.oncomplete = () => ok(req.result);
+    tx.onerror = tx.onabort = () => fail(tx.error);
+  });
+}
+
+// 每个版本注册成独立字族，不依赖字体文件里的名字
+async function useFont(edition, name, buf) {
+  const face = await new FontFace('writer-' + edition, buf).load();
+  document.fonts.add(face);
+  loaded[edition] = true;
+  $('name-' + edition).textContent = name;
+}
+
+async function pickFont(e) {
+  const file = e.target.files[0], edition = e.target.dataset.edition;
+  if (!file) return;
+  try {
+    const buf = await file.arrayBuffer();
+    await useFont(edition, file.name, buf);
+    await run('readwrite', (s) => s.put({ name: file.name, buf }, edition));
+    document.querySelector(`input[name=edition][value=${edition}]`).checked = true;
+  } catch (err) {
+    status.textContent = `字体载入失败：${err.message}`;
+  }
+  draw();
+}
+
+// ———— 排版 ————
+
+const PUNCT = /[\p{P}\p{S}]/gu;
+const ROW = 100, COL = 120, FONT = 82, MARGIN = 130;
+
+function value(name) {
+  return document.querySelector(`input[name=${name}]:checked`).value;
+}
+
+// 正文按行分列：每行至少一列，超过每列字数就折到下一列
+function layout() {
+  const strip = $('strip').checked;
+  const clean = (s) => [...(strip ? s.replace(PUNCT, '') : s).replace(/\s/g, '')];
+  const lines = $('text').value.split('\n').map(clean).filter((l) => l.length);
+  const title = clean($('title').value), author = clean($('author').value);
+  const total = lines.reduce((n, l) => n + l.length, 0);
+  const longest = Math.max(0, ...lines.map((l) => l.length));
+  // 自动：短句诗一句一列，长文排成接近方形
+  let rows = Number($('rows').value) || (longest <= 16 ? longest : Math.min(18, Math.max(8, Math.ceil(Math.sqrt(total * 1.4)))));
+  rows = Math.max(rows, 3);
+  const cols = [];
+  // 第一列：题目在上，作者靠下；放不下时作者单占一列
+  if (title.length || author.length) {
+    if (title.length + author.length + 1 <= rows) {
+      cols.push([...title, ...Array(rows - title.length - author.length).fill(''), ...author]);
+    } else {
+      for (let i = 0; i < title.length; i += rows) cols.push(title.slice(i, i + rows));
+      if (author.length) cols.push([...Array(Math.max(0, rows - author.length)).fill(''), ...author.slice(0, rows)]);
+    }
+  }
+  for (const l of lines) for (let i = 0; i < l.length; i += rows) cols.push(l.slice(i, i + rows));
+  return { rows, cols };
+}
+
+function draw() {
+  const edition = value('edition'), zhalan = value('style') === 'zhalan';
+  const { rows, cols } = layout();
+  const n = Math.max(cols.length, 1);
+  const W = MARGIN * 2 + n * COL, H = MARGIN * 2 + rows * ROW;
+  canvas.width = W;
+  canvas.height = H;
+  ctx.fillStyle = '#f6f1e4';
+  ctx.fillRect(0, 0, W, H);
+  if (zhalan) {
+    ctx.strokeStyle = 'rgba(60,42,30,.55)';
+    ctx.lineWidth = 3;
+    const top = MARGIN - 30, bottom = H - MARGIN + 30;
+    ctx.strokeRect(MARGIN, top, W - MARGIN * 2, bottom - top);
+    ctx.beginPath();
+    for (let i = 1; i < n; i++) {
+      const x = MARGIN + i * COL;
+      ctx.moveTo(x, top);
+      ctx.lineTo(x, bottom);
+    }
+    ctx.stroke();
+  }
+  ctx.fillStyle = '#1c1a17';
+  ctx.font = `${FONT}px "writer-${edition}", serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  // 从右往左，自上而下
+  cols.forEach((col, i) => {
+    const x = W - MARGIN - COL * (i + 0.5);
+    col.forEach((ch, j) => { if (ch) ctx.fillText(ch, x, MARGIN + ROW * (j + 0.5)); });
+  });
+  const ready = loaded[edition];
+  status.textContent = ready ? '' : `${edition === 'trad' ? '繁体' : '简体'}字体还没载入，预览用的是系统字体`;
+  download.setAttribute('aria-disabled', String(!ready || !cols.length));
+}
+
+download.addEventListener('click', (e) => {
+  e.preventDefault();
+  canvas.toBlob((blob) => {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `${($('title').value.trim() || '自写').replace(/[\\/:*?"<>|]/g, '')}_小楷.png`;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  }, 'image/png');
+});
+
+for (const el of document.querySelectorAll('input[type=file]')) el.addEventListener('change', pickFont);
+for (const el of document.querySelectorAll('input:not([type=file]), textarea')) el.addEventListener('input', draw);
+
+// 启动：先画一次，再从本机取出上次选过的字体
+draw();
+Promise.all(['trad', 'simp'].map(async (edition) => {
+  const saved = await run('readonly', (s) => s.get(edition));
+  if (saved) await useFont(edition, saved.name, saved.buf);
+})).catch((err) => { status.textContent = `读不到本机保存的字体：${err.message}`; }).finally(draw);
+</script>
+</body>
+</html>

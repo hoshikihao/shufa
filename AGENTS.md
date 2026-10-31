@@ -7,6 +7,8 @@
   - 页面专属样式写在该页 `<style>` 里
 - `design/`：设计稿与素材，只读参考；不往画布发布
 - `docs/`：原项目前端，只读参考，不改不删
+- `tools/`：本机工具，不部署，`site/` 不引用
+  - `writer.html`：自写诗文，字体由使用者从本机选取 TTF，只存在本机浏览器
 - 临时脚本、截图放会话 scratchpad，不进仓库
 
 ## Implementation
@@ -15,7 +17,7 @@
 - 水面与墨虾代码只在 `site/js/water.js` 保留一份
 - 所有动效响应 `prefers-reduced-motion`
 - `site/404.html` 里的资源和链接写根路径（以 `/` 开头）
-- 字体只用本站 `site/fonts/` 的思源宋体，不引用外部字体服务；字体样式表不阻塞渲染
+- `site/` 的字体只用本站 `site/fonts/` 的思源宋体，不引用外部字体服务；字体样式表不阻塞渲染
 - `site/data/anthology.json` 与 `docs/anthology.json` 内容一致
 - 字体文件、打包文件不进仓库；`site/fonts/` 下的开源字体切片除外
 
@@ -31,6 +33,7 @@
 
 ## Verification
 - 本地服务：`python3 -m http.server 8731 --directory site`，用内置浏览器逐页检查
+- `tools/` 本地服务：`python3 -m http.server 8732 --directory tools`
 - 动效在内置浏览器里检查，不凭 headless 截图判断
 - 手机排版在 iOS 模拟器（iPhone 17 Pro）检查
 - 检查各页在减少动态效果时的降级
