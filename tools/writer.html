@@ -26,6 +26,13 @@ label.field { display: flex; flex-direction: column; gap: 6px; font-size: 14px; 
 .actions { display: flex; align-items: center; gap: 20px; }
 .actions a { display: inline-block; padding: 14px 26px; background: var(--ink); color: var(--paper); text-decoration: none; letter-spacing: .5em; }
 .actions a[aria-disabled=true] { background: #8a8379; pointer-events: none; }
+.hits { list-style: none; margin: 0; padding: 0; max-height: 280px; overflow-y: auto; border-bottom: 1px solid var(--rule); }
+.hits:empty { display: none; }
+.hits li { border-top: 1px solid var(--rule); }
+.hits button { width: 100%; display: flex; align-items: baseline; gap: 12px; padding: 10px 6px; border: none; background: none; font: inherit; color: var(--ink); text-align: left; cursor: pointer; }
+.hits button:hover, .hits button[aria-current=true] { background: rgba(35,33,29,.06); }
+.hits .t { flex: 1 1 auto; font-size: 16px; letter-spacing: .12em; }
+.hits .a { font-size: 13px; letter-spacing: .08em; color: var(--muted); white-space: nowrap; }
 #status { margin: 0; font-size: 13px; letter-spacing: .1em; color: var(--accent); min-height: 1.5em; }
 .preview { flex: 1 1 440px; min-width: 0; display: flex; justify-content: center; }
 canvas { max-width: 100%; max-height: 82vh; width: auto; height: auto; box-shadow: 0 18px 40px rgba(35,33,29,.12), 0 0 0 1px rgba(80,66,48,.18); }
@@ -61,6 +68,12 @@ canvas { max-width: 100%; max-height: 82vh; width: auto; height: auto; box-shado
       </div>
     </fieldset>
 
+    <div>
+      <label class="field">搜索诗文<input type="search" id="q" placeholder="诗题、作者或名句" autocomplete="off"></label>
+      <p class="note" id="corpusNote">本站诗库 963 篇；第一次搜索时从 chinese-poetry 下载唐诗、宋词、诗经、楚辞（约 33MB），之后存在本机。</p>
+      <ul class="hits" id="hits"></ul>
+    </div>
+
     <label class="field">题目<input type="text" id="title" value="静夜思"></label>
     <label class="field">作者<input type="text" id="author" value="李白"></label>
     <label class="field">正文（换行即换列）<textarea id="text">床前明月光，疑是地上霜。
@@ -83,7 +96,8 @@ canvas { max-width: 100%; max-height: 82vh; width: auto; height: auto; box-shado
 </main>
 
 <script>
-// 本机自写：选取的字体存进本机 IndexedDB，用 FontFace 载入，在 canvas 上竖排成一幅，导出 PNG
+// 本机自写：选取的字体存进本机 IndexedDB，用 FontFace 载入，在 canvas 上竖排成一幅，导出 PNG。
+// 诗文可从本站诗库和 chinese-poetry 数据集里搜索填入；数据集第一次搜索时下载，存进本机 IndexedDB
 
 const $ = (id) => document.getElementById(id);
 const canvas = $('sheet'), ctx = canvas.getContext('2d'), status = $('status'), download = $('download');
@@ -95,8 +109,10 @@ let opening = null;
 function openDb() {
   if (!opening) {
     opening = new Promise((ok, fail) => {
-      const req = indexedDB.open('writer', 1);
-      req.onupgradeneeded = () => req.result.createObjectStore('fonts');
+      const req = indexedDB.open('writer', 2);
+      req.onupgradeneeded = () => {
+        for (const name of ['fonts', 'corpus']) if (!req.result.objectStoreNames.contains(name)) req.result.createObjectStore(name);
+      };
       req.onsuccess = () => ok(req.result);
       req.onerror = () => fail(req.error);
     });
@@ -104,10 +120,10 @@ function openDb() {
   return opening;
 }
 
-async function run(mode, fn) {
+async function run(mode, fn, store = 'fonts') {
   const db = await openDb();
   return new Promise((ok, fail) => {
-    const tx = db.transaction('fonts', mode), req = fn(tx.objectStore('fonts'));
+    const tx = db.transaction(store, mode), req = fn(tx.objectStore(store));
     tx.oncomplete = () => ok(req.result);
     tx.onerror = tx.onabort = () => fail(tx.error);
   });
@@ -134,6 +150,160 @@ async function pickFont(e) {
   }
   draw();
 }
+
+// ———— 诗文搜索 ————
+
+// chinese-poetry（MIT）固定到一个提交，不跟上游变动；仓库超过 jsDelivr 的 50MB 上限，直接读 GitHub 原始文件
+const CDN = 'https://raw.githubusercontent.com/chinese-poetry/chinese-poetry/b8594f81a897/';
+const CORPUS_KEY = 'b8594f81a897';
+const thousands = (n) => Array.from({ length: n }, (_, i) => i * 1000);
+// [来源, 文件, 字形]；全唐诗是繁体，其余是简体
+const FILES = [
+  ...thousands(58).map((n) => ['唐诗', `全唐诗/poet.tang.${n}.json`, 'trad']),
+  ...thousands(22).map((n) => ['宋词', `宋词/ci.song.${n}.json`, 'simp']),
+  ['诗经', '诗经/shijing.json', 'simp'],
+  ['楚辞', '楚辞/chuci.json', 'simp'],
+];
+
+const search = { anthology: [], corpus: [], toSimp: new Map(), downloading: null };
+const hits = $('hits'), qInput = $('q'), corpusNote = $('corpusNote');
+
+// 搜索时繁简都按简体比：繁→简对照表取自本站诗库里逐字对齐的繁简两版
+const simplify = (s) => [...s].map((ch) => search.toSimp.get(ch) || ch).join('');
+
+function learnPairs(simp, trad) {
+  const a = [...simp], b = [...trad];
+  if (a.length !== b.length) return;
+  a.forEach((ch, i) => { if (ch !== b[i]) search.toSimp.set(b[i], ch); });
+}
+
+// 本站诗库：诗词每句一列，古文、经文连排（与选诗页的全文展示一致）
+function anthologyText(c, cat) {
+  return cat === '古文名篇' || cat === '经文国学' ? c : c.replace(/([。！？])(?=.)/g, '$1\n');
+}
+
+async function loadAnthology() {
+  const r = await fetch('../site/data/anthology.json');
+  if (!r.ok) throw new Error(`本站诗库读取失败（${r.status}）`);
+  search.anthology = (await r.json()).map((p) => {
+    for (const k of ['t', 'a', 'c']) learnPairs(p[k + '_simp'], p[k + '_trad']);
+    return { src: '诗库', ed: 'simp', t: p.t_simp, a: p.a_simp, c: anthologyText(p.c_simp, p.cat),
+      trad: { t: p.t_trad, a: p.a_trad, c: anthologyText(p.c_trad, p.cat) } };
+  });
+}
+
+// 偶尔连接卡住或临时出错：每个文件限时 30 秒，失败后等几秒再试，共试 4 次
+async function getJson(url) {
+  for (let tries = 1; ; tries++) {
+    try {
+      const r = await fetch(url, { signal: AbortSignal.timeout(30000) });
+      if (!r.ok) throw new Error(`下载失败（${r.status}）`);
+      return await r.json();
+    } catch (err) {
+      if (tries >= 4) throw new Error(`${decodeURI(url.slice(CDN.length))} ${err.message}`);
+      await new Promise((ok) => setTimeout(ok, 2000 * tries));
+    }
+  }
+}
+
+function toItem(p, src, ed) {
+  return { src, ed, t: p.title || p.rhythmic || '', a: p.author || '', c: (p.paragraphs || p.content || []).join('\n') };
+}
+
+// 并发下载全部数据文件，存进本机；下载过就直接读本机
+function loadCorpus() {
+  if (!search.downloading) {
+    search.downloading = (async () => {
+      const saved = await run('readonly', (s) => s.get(CORPUS_KEY), 'corpus');
+      if (saved) return saved;
+      const out = [];
+      let next = 0, done = 0;
+      await Promise.all(Array.from({ length: 4 }, async () => {
+        while (next < FILES.length) {
+          const [src, file, ed] = FILES[next++];
+          out.push(...(await getJson(CDN + file)).map((p) => toItem(p, src, ed)));
+          corpusNote.textContent = `正在下载诗文数据 ${++done} / ${FILES.length}……`;
+        }
+      }));
+      // 并发下载顺序不定，按来源排好再存
+      const order = ['唐诗', '宋词', '诗经', '楚辞'];
+      out.sort((x, y) => order.indexOf(x.src) - order.indexOf(y.src));
+      await run('readwrite', (s) => s.put(out, CORPUS_KEY), 'corpus');
+      return out;
+    })().then(async (list) => {
+      // 繁→简对照表来自本站诗库，先等它读完
+      await anthologyReady;
+      for (const p of list) p.key = simplify(p.t + '\u0001' + p.a + '\u0001' + p.c);
+      search.corpus = list;
+      corpusNote.textContent = `可搜索本站诗库 ${search.anthology.length} 篇，唐诗、宋词、诗经、楚辞 ${list.length} 篇`;
+      runSearch();
+    }).catch((err) => {
+      search.downloading = null;
+      corpusNote.textContent = `诗文数据没取到：${err.message}。再搜一次会重试。`;
+    });
+  }
+  return search.downloading;
+}
+
+// 题目完全一致的排最前，其次题目包含、作者一致，最后是正文里有
+function runSearch() {
+  const q = simplify(qInput.value.replace(/\s/g, ''));
+  if (!q) { hits.replaceChildren(); return; }
+  const rank = (p) => {
+    const t = simplify(p.t), a = simplify(p.a);
+    return t === q ? 0 : t.includes(q) ? 1 : a === q ? 2 : 3;
+  };
+  const found = [];
+  for (const p of search.anthology) {
+    if ([p.t, p.a, p.c, p.trad.t, p.trad.a, p.trad.c].some((s) => s.includes(q))) found.push(p);
+  }
+  for (const p of search.corpus) if (p.key.includes(q)) found.push(p);
+  const top = found.map((p, i) => [rank(p), i, p]).sort((x, y) => x[0] - y[0] || x[1] - y[1]).slice(0, 40);
+  hits.replaceChildren(...top.map(([, , p]) => {
+    const li = document.createElement('li'), b = document.createElement('button');
+    b.type = 'button';
+    const t = document.createElement('span'), a = document.createElement('span');
+    t.className = 't';
+    t.textContent = p.t;
+    a.className = 'a';
+    a.textContent = [p.a, p.src].filter(Boolean).join(' · ');
+    b.append(t, a);
+    b.addEventListener('click', () => {
+      for (const x of hits.querySelectorAll('button')) x.setAttribute('aria-current', String(x === b));
+      pick(p);
+    });
+    li.append(b);
+    return li;
+  }));
+  if (found.length > top.length) {
+    const li = document.createElement('li');
+    li.className = 'note';
+    li.style.padding = '10px 6px';
+    li.textContent = `共 ${found.length} 首，只列前 ${top.length} 首；加上作者或名句能找得更准`;
+    hits.append(li);
+  }
+}
+
+// 填入题目、作者、正文；字体切到和原文字形一致的一版，诗库两版都有就跟随当前选择
+function pick(p) {
+  const edition = p.trad && value('edition') === 'trad' ? 'trad' : p.trad ? 'simp' : p.ed;
+  const v = edition === 'trad' && p.trad ? p.trad : p;
+  document.querySelector(`input[name=edition][value=${edition}]`).checked = true;
+  $('title').value = v.t;
+  $('author').value = v.a;
+  $('text').value = v.c;
+  $('rows').value = '';
+  draw();
+}
+
+function onSearch(e) {
+  if (e.isComposing) return;
+  if (!search.corpus.length) loadCorpus();
+  runSearch();
+}
+qInput.addEventListener('input', onSearch);
+qInput.addEventListener('compositionend', onSearch);
+const anthologyReady = loadAnthology().then(runSearch).catch((err) => { corpusNote.textContent = err.message; });
 
 // ———— 排版 ————
 
